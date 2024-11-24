@@ -9,14 +9,41 @@
         android:id="@+id/loginScreenFragment"
         android:name="com.example.expensetracker2.LoginScreenFragment"
         android:label="fragment_login_screen"
-        tools:layout="@layout/fragment_login_screen" >
+        tools:layout="@layout/fragment_login_screen">
         <action
             android:id="@+id/action_loginScreenFragment_to_listOfExpensesFragment2"
-            app:destination="@id/listOfExpensesFragment" />
+            app:destination="@id/listOfExpensesFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:popUpTo="@id/loginScreenFragment"
+            app:popUpToInclusive="true"/>
     </fragment>
     <fragment
         android:id="@+id/listOfExpensesFragment"
         android:name="com.example.expensetracker2.ListOfExpensesFragment"
         android:label="fragment_list_of_expenses"
-        tools:layout="@layout/fragment_list_of_expenses" />
+        tools:layout="@layout/fragment_list_of_expenses" >
+        <action
+            android:id="@+id/action_listOfExpensesFragment_to_addExpensesFragment2"
+            app:destination="@id/addExpensesFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/addExpensesFragment"
+        android:name="com.example.expensetracker2.AddExpensesFragment"
+        android:label="fragment_add_expenses"
+        tools:layout="@layout/fragment_add_expenses" >
+        <action
+            android:id="@+id/action_addExpensesFragment_to_listOfExpensesFragment"
+            app:destination="@id/listOfExpensesFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
 </navigation>

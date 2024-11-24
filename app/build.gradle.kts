@@ -54,4 +54,9 @@ dependencies {
     //NavComponent
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.navigation.ui.ktx.v270)
+
+    //Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.okhttp)
 }
