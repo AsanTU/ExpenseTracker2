@@ -7,13 +7,13 @@
     android:orientation="vertical"
     android:padding="16dp"
     android:background="@color/dark_background"
-    tools:context=".AddExpensesFragment">
+    tools:context=".ui.fragments.AddExpensesFragment">
 
     <TextView
         android:id="@+id/title_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add Expense"
+        android:text="@string/add_expense"
         android:textColor="@color/text_white"
         android:textSize="26sp"
         android:fontFamily="sans-serif-medium"
@@ -37,7 +37,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Amount"
+                android:text="@string/amount"
                 android:textColor="@color/text_white"
                 android:textSize="16sp"
                 android:layout_marginEnd="16dp"/>
@@ -47,7 +47,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="Enter amount"
+                android:hint="@string/enter_amount_two"
                 android:inputType="numberDecimal|numberSigned"
                 android:textColor="@color/text_white"
                 android:textColorHint="@color/light_gray"
@@ -65,7 +65,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Currency"
+                android:text="@string/currency"
                 android:textColor="@color/text_white"
                 android:textSize="16sp"
                 android:layout_marginEnd="16dp"/>
@@ -93,7 +93,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Category"
+                android:text="@string/category"
                 android:textColor="@color/text_white"
                 android:textSize="16sp"
                 android:layout_marginEnd="16dp"/>
@@ -114,7 +114,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_add"
-                android:contentDescription="Add category"
+                android:contentDescription="@string/add_category"
                 android:layout_marginStart="8dp"
                 app:tint="@color/light_blue" />
         </LinearLayout>
@@ -130,7 +130,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Date"
+                android:text="@string/date"
                 android:textColor="@color/text_white"
                 android:textSize="16sp"
                 android:layout_marginEnd="16dp"/>
@@ -140,7 +140,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Select date"
+                android:text="@string/select_date_two"
                 android:textColor="@color/light_gray"
                 android:textSize="16sp"/>
 
@@ -149,7 +149,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_calendar"
-                android:contentDescription="Select date"
+                android:contentDescription="@string/select_date_three"
                 app:tint="@color/light_blue" />
         </LinearLayout>
     </LinearLayout>
@@ -158,7 +158,7 @@
         android:id="@+id/summary_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Make sure the details are correct."
+        android:text="@string/make_sure_the_details_are_correct"
         android:textColor="@color/light_gray"
         android:textSize="14sp"
         android:layout_marginBottom="24dp"
@@ -168,7 +168,7 @@
         android:id="@+id/save_expense_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Save"
+        android:text="@string/save"
         android:background="@drawable/rounded_button_green"
         android:textColor="@color/text_white"
         android:textStyle="bold"

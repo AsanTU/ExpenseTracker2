@@ -1,6 +1,5 @@
-package com.example.expensetracker2
+package com.example.expensetracker2.ui.activities
 
-import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
@@ -9,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.fragment.NavHostFragment
+import com.example.expensetracker2.R
 
 @Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {
@@ -27,8 +27,7 @@ class MainActivity : AppCompatActivity() {
 
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        val navController = navHostFragment.navController
-
+        navHostFragment.navController
     }
 
     override fun onResume() {

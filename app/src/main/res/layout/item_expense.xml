@@ -13,7 +13,7 @@
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:src="@drawable/ic_category"
-        android:contentDescription="Category Icon"
+        android:contentDescription="@string/category_icon"
         app:tint="@color/light_blue"
         android:layout_marginEnd="8dp"/>
 
@@ -27,7 +27,7 @@
             android:id="@+id/expense_title_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Groceries"
+            android:text="@string/groceries"
             android:textColor="@color/text_white"
             android:textSize="16sp"
             android:fontFamily="sans-serif-medium"/>
@@ -36,7 +36,7 @@
             android:id="@+id/expense_date_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Nov 17, 2024"
+            android:text="@string/nov_17_2024"
             android:textColor="@color/light_gray"
             android:textSize="14sp"
             android:fontFamily="sans-serif"/>
@@ -46,7 +46,7 @@
         android:id="@+id/expense_amount_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="$45.00"
+        android:text="@string/_45_00"
         android:textColor="@color/error_red"
         android:textSize="16sp"
         android:fontFamily="sans-serif-medium"/>

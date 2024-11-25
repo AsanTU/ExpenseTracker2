@@ -1,11 +1,8 @@
-package com.example.expensetracker2
+package com.example.expensetracker2.ui.fragments
 
-import android.adservices.measurement.WebSourceRegistrationRequest
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,12 +11,8 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
-import retrofit2.converter.gson.GsonConverterFactory
-import com.example.expensetracker2.databinding.FragmentListOfExpensesBinding
+import com.example.expensetracker2.R
 import com.example.expensetracker2.databinding.FragmentLoginScreenBinding
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class LoginScreenFragment : Fragment() {
 
@@ -36,11 +29,13 @@ class LoginScreenFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true){
-            override fun handleOnBackPressed() {
-                requireActivity().finish()
-            }
-        })
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    requireActivity().finish()
+                }
+            })
         checkEmpty()
     }
 
@@ -92,9 +87,11 @@ class LoginScreenFragment : Fragment() {
             } else {
                 Toast.makeText(requireContext(), "Signed Up in successfully!", Toast.LENGTH_SHORT)
                     .show()
-                findNavController().navigate(R.id.action_loginScreenFragment_to_listOfExpensesFragment2,
+                findNavController().navigate(
+                    R.id.action_loginScreenFragment_to_listOfExpensesFragment2,
                     null,
-                    navOptions { popUpTo(R.id.loginScreenFragment) { inclusive = true }
+                    navOptions {
+                        popUpTo(R.id.loginScreenFragment) { inclusive = true }
                     }
                 )
                 animateBtn(binding.registerBtn, true)

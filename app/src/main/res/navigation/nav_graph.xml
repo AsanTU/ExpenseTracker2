@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/loginScreenFragment"
-        android:name="com.example.expensetracker2.LoginScreenFragment"
+        android:name="com.example.expensetracker2.ui.fragments.LoginScreenFragment"
         android:label="fragment_login_screen"
         tools:layout="@layout/fragment_login_screen">
         <action
@@ -22,7 +22,7 @@
     </fragment>
     <fragment
         android:id="@+id/listOfExpensesFragment"
-        android:name="com.example.expensetracker2.ListOfExpensesFragment"
+        android:name="com.example.expensetracker2.ui.fragments.ListOfExpensesFragment"
         android:label="fragment_list_of_expenses"
         tools:layout="@layout/fragment_list_of_expenses" >
         <action
@@ -32,10 +32,24 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_listOfExpensesFragment_to_conversionFragment"
+            app:destination="@id/conversionFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_listOfExpensesFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
     <fragment
         android:id="@+id/addExpensesFragment"
-        android:name="com.example.expensetracker2.AddExpensesFragment"
+        android:name="com.example.expensetracker2.ui.fragments.AddExpensesFragment"
         android:label="fragment_add_expenses"
         tools:layout="@layout/fragment_add_expenses" >
         <action
@@ -45,5 +59,19 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/conversionFragment"
+        android:name="com.example.expensetracker2.ui.fragments.ConversionFragment"
+        android:label="fragment_conversion"
+        tools:layout="@layout/fragment_conversion" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.expensetracker2.ui.fragments.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/action_settingsFragment_to_loginScreenFragment"
+            app:destination="@id/loginScreenFragment" />
     </fragment>
 </navigation>

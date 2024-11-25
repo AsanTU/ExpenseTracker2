@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:background="@color/dark_background"
+    android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".ListOfExpensesFragment">
+    tools:context=".ui.fragments.ListOfExpensesFragment">
 
     <TextView
         android:id="@+id/title_tv"
@@ -16,7 +16,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="16dp"
         android:fontFamily="sans-serif-medium"
-        android:text="Expenses"
+        android:text="@string/expenses"
         android:textColor="@color/text_white"
         android:textSize="26sp" />
 
@@ -32,31 +32,25 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginEnd="8dp"
-            android:contentDescription="Filter Icon"
+            android:contentDescription="@string/filter_icon"
             android:src="@drawable/ic_filter"
             app:tint="@color/light_blue" />
 
         <TextView
+            android:id="@+id/filter_by_date_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:fontFamily="sans-serif"
-            android:text="Filter by date"
+            android:text="@string/filter_by_date"
             android:textColor="@color/light_gray"
             android:textSize="16sp" />
-
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:contentDescription="Dropdown Icon"
-            android:src="@drawable/ic_dropdown"
-            app:tint="@color/light_blue" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/expense_rv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_weight="1"
         android:clipToPadding="false"
         android:paddingBottom="8dp"
@@ -69,7 +63,7 @@
         android:layout_marginTop="12dp"
         android:background="@drawable/rounded_button_green"
         android:elevation="6dp"
-        android:text="Add Expense"
+        android:text="@string/add_expense_two"
         android:textColor="@color/text_white"
         android:textStyle="bold" />
 
@@ -84,7 +78,7 @@
         app:itemIconSize="24dp"
         app:itemIconTint="@color/light_blue"
         app:itemTextColor="@color/light_blue"
-        app:labelVisibilityMode="labeled"
+        app:itemBackground="@android:color/transparent"
         app:menu="@menu/bottom_navigation_menu" />
 
 </LinearLayout>
