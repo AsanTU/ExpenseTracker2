@@ -3,20 +3,25 @@ package com.example.expensetracker2.ui.fragments
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
+import com.example.expensetracker2.Api
+import com.example.expensetracker2.LoginRequest
+import com.example.expensetracker2.LoginResponse
 import com.example.expensetracker2.R
+import com.example.expensetracker2.RegisterRequest
+import com.example.expensetracker2.RegisterResponse
 import com.example.expensetracker2.databinding.FragmentLoginScreenBinding
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import android.util.Patterns
 
 class LoginScreenFragment : Fragment() {
 
@@ -105,7 +110,6 @@ class LoginScreenFragment : Fragment() {
                         Toast.makeText(requireContext(), loginResponse?.message ?: "Login failed", Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    Log.e("LoginError", "HTTP ${response.code()}: ${response.errorBody()?.string()}")
                     Toast.makeText(requireContext(), "Response failed", Toast.LENGTH_SHORT).show()
                 }
                 animateBtn(binding.loginBtn, response.isSuccessful)
