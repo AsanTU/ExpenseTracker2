@@ -8,38 +8,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.example.expensetracker2.R
 import com.example.expensetracker2.databinding.FragmentLoginScreenBinding
+import com.example.expensetracker2.databinding.FragmentRegisterScreenBinding
 
-class LoginScreenFragment : Fragment() {
+class RegisterScreenFragment : Fragment() {
 
-    private var _binding: FragmentLoginScreenBinding? = null
+    private var _binding: FragmentRegisterScreenBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentLoginScreenBinding.inflate(inflater, container, false)
+    ): View? {
+        _binding = FragmentRegisterScreenBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    requireActivity().finish()
-                }
-            })
-        checkEmpty()
-        binding.singUpTv.setOnClickListener {
-            findNavController().navigate(R.id.action_loginScreenFragment_to_registerScreenFragment)
-        }
+        registerBtn()
     }
 
     @SuppressLint("Recycle")
@@ -59,31 +49,27 @@ class LoginScreenFragment : Fragment() {
         }.start()
     }
 
-    private fun checkEmpty() {
-        binding.loginBtn.setOnClickListener {
+    private fun registerBtn(){
+        binding.registerBtn.setOnClickListener {
             val email = binding.emailEt.text.toString().trim()
             val password = binding.passwordEt.text.toString().trim()
-            if (email.isEmpty() || password.isEmpty()) {
+            val username = binding.usernameEt.text.toString().trim()
+            if (email.isEmpty() || password.isEmpty() || username.isEmpty()) {
                 Toast.makeText(requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT)
                     .show()
-                animateBtn(binding.loginBtn, false)
+                animateBtn(binding.registerBtn, false)
             } else {
-                Toast.makeText(requireContext(), "Logged in successfully!", Toast.LENGTH_SHORT)
+                Toast.makeText(requireContext(), "Signed Up in successfully!", Toast.LENGTH_SHORT)
                     .show()
                 findNavController().navigate(
-                    R.id.action_loginScreenFragment_to_listOfExpensesFragment2,
+                    R.id.action_registerScreenFragment_to_listOfExpensesFragment,
                     null,
                     navOptions {
                         popUpTo(R.id.loginScreenFragment) { inclusive = true }
                     }
                 )
-                animateBtn(binding.loginBtn, true)
+                animateBtn(binding.registerBtn, true)
             }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
     }
 }

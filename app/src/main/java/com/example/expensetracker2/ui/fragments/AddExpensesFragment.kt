@@ -60,6 +60,11 @@ class AddExpensesFragment : Fragment() {
             saveExpense(position)
             true.animateBtn(binding.saveExpenseBtn)
         }
+
+        binding.arrowBackIc.setOnClickListener {
+            findNavController().navigate(R.id.action_addExpensesFragment_to_listOfExpensesFragment)
+            animateView(binding.arrowBackIc)
+        }
     }
 
     private fun setupCategorySpinner() {

@@ -19,6 +19,13 @@
             app:popExitAnim="@anim/slide_out_right"
             app:popUpTo="@id/loginScreenFragment"
             app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/action_loginScreenFragment_to_registerScreenFragment"
+            app:destination="@id/registerScreenFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
     <fragment
         android:id="@+id/listOfExpensesFragment"
@@ -73,5 +80,18 @@
         <action
             android:id="@+id/action_settingsFragment_to_loginScreenFragment"
             app:destination="@id/loginScreenFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/registerScreenFragment"
+        android:name="com.example.expensetracker2.ui.fragments.RegisterScreenFragment"
+        android:label="fragment_register_screen"
+        tools:layout="@layout/fragment_register_screen" >
+        <action
+            android:id="@+id/action_registerScreenFragment_to_listOfExpensesFragment"
+            app:destination="@id/listOfExpensesFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
 </navigation>
