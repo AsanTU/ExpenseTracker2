@@ -84,16 +84,6 @@ class LoginScreenFragment : Fragment() {
                 animateBtn(binding.loginBtn, false)
             } else {
                 loginUser(email, password)
-                Toast.makeText(requireContext(), "Logged in successfully!", Toast.LENGTH_SHORT)
-                    .show()
-                findNavController().navigate(
-                    R.id.action_loginScreenFragment_to_listOfExpensesFragment2,
-                    null,
-                    navOptions {
-                        popUpTo(R.id.loginScreenFragment) { inclusive = true }
-                    }
-                )
-                animateBtn(binding.loginBtn, true)
             }
         }
     }

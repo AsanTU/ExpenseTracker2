@@ -66,16 +66,6 @@ class RegisterScreenFragment : Fragment() {
                 animateBtn(binding.registerBtn, false)
             } else {
                 registerUser(username, email, password)
-                Toast.makeText(requireContext(), "Signed Up in successfully!", Toast.LENGTH_SHORT)
-                    .show()
-                findNavController().navigate(
-                    R.id.action_registerScreenFragment_to_listOfExpensesFragment,
-                    null,
-                    navOptions {
-                        popUpTo(R.id.loginScreenFragment) { inclusive = true }
-                    }
-                )
-                animateBtn(binding.registerBtn, true)
             }
         }
     }
@@ -91,6 +81,14 @@ class RegisterScreenFragment : Fragment() {
                     if (registerResponse?.success == true) {
                         Toast.makeText(requireContext(), "Registered successfully!", Toast.LENGTH_SHORT).show()
 //                        navigateToExpenseList()
+                        findNavController().navigate(
+                            R.id.action_registerScreenFragment_to_listOfExpensesFragment,
+                            null,
+                            navOptions {
+                                popUpTo(R.id.loginScreenFragment) { inclusive = true }
+                            }
+                        )
+                        animateBtn(binding.registerBtn, true)
                     } else {
                         Toast.makeText(requireContext(), registerResponse?.message ?: "Registration failed", Toast.LENGTH_SHORT).show()
                     }
