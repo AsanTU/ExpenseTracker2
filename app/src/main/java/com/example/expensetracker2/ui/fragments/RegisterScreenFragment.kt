@@ -75,15 +75,6 @@ class RegisterScreenFragment : Fragment() {
                         popUpTo(R.id.loginScreenFragment) { inclusive = true }
                     }
                 )
-
-                findNavController().navigate(
-                    R.id.action_registerScreenFragment_to_listOfExpensesFragment,
-                    null,
-                    navOptions {
-                        popUpTo(R.id.loginScreenFragment) { inclusive = true }
-                    }
-                )
-
                 animateBtn(binding.registerBtn, true)
             }
         }
