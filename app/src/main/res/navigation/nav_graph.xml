@@ -87,8 +87,8 @@
         android:label="fragment_register_screen"
         tools:layout="@layout/fragment_register_screen" >
         <action
-            android:id="@+id/action_registerScreenFragment_to_listOfExpensesFragment"
-            app:destination="@id/listOfExpensesFragment"
+            android:id="@+id/action_registerScreenFragment_to_loginScreenFragment"
+            app:destination="@id/loginScreenFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"

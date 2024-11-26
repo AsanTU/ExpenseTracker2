@@ -82,7 +82,7 @@ class RegisterScreenFragment : Fragment() {
                         Toast.makeText(requireContext(), "Registered successfully!", Toast.LENGTH_SHORT).show()
 //                        navigateToExpenseList()
                         findNavController().navigate(
-                            R.id.action_registerScreenFragment_to_listOfExpensesFragment,
+                            R.id.action_registerScreenFragment_to_loginScreenFragment,
                             null,
                             navOptions {
                                 popUpTo(R.id.loginScreenFragment) { inclusive = true }
