@@ -3,16 +3,25 @@ package com.example.expensetracker2.ui.fragments
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
+import com.example.expensetracker2.Api
+import com.example.expensetracker2.LoginRequest
+import com.example.expensetracker2.LoginResponse
 import com.example.expensetracker2.R
+import com.example.expensetracker2.RegisterRequest
+import com.example.expensetracker2.RegisterResponse
 import com.example.expensetracker2.databinding.FragmentLoginScreenBinding
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class LoginScreenFragment : Fragment() {
 
@@ -37,9 +46,6 @@ class LoginScreenFragment : Fragment() {
                 }
             })
         checkEmpty()
-        binding.singUpTv.setOnClickListener {
-            findNavController().navigate(R.id.action_loginScreenFragment_to_registerScreenFragment)
-        }
     }
 
     @SuppressLint("Recycle")
@@ -59,27 +65,95 @@ class LoginScreenFragment : Fragment() {
         }.start()
     }
 
+    private fun isValidEmail(email: String): Boolean {
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    }
+
     private fun checkEmpty() {
         binding.loginBtn.setOnClickListener {
             val email = binding.emailEt.text.toString().trim()
             val password = binding.passwordEt.text.toString().trim()
             if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show()
+                animateBtn(binding.loginBtn, false)
+            } else if (!isValidEmail(email)) {
+                Toast.makeText(requireContext(), "Please enter a valid email address", Toast.LENGTH_SHORT).show()
                 animateBtn(binding.loginBtn, false)
             } else {
-                Toast.makeText(requireContext(), "Logged in successfully!", Toast.LENGTH_SHORT)
-                    .show()
-                findNavController().navigate(
-                    R.id.action_loginScreenFragment_to_listOfExpensesFragment2,
-                    null,
-                    navOptions {
-                        popUpTo(R.id.loginScreenFragment) { inclusive = true }
-                    }
-                )
-                animateBtn(binding.loginBtn, true)
+                loginUser(email, password)
             }
         }
+
+        binding.registerBtn.setOnClickListener {
+            val email = binding.emailEt.text.toString().trim()
+            val password = binding.passwordEt.text.toString().trim()
+            if (email.isEmpty() || password.isEmpty()) {
+                Toast.makeText(requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show()
+                animateBtn(binding.registerBtn, false)
+            } else {
+                registerUser(email, password)
+            }
+        }
+    }
+
+    private fun loginUser(email: String, password: String) {
+        val loginRequest = LoginRequest(email = email, password = password)
+
+        Api.api.login(loginRequest).enqueue(object : Callback<LoginResponse> {
+            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                val loginResponse = response.body()
+                if (response.isSuccessful) {
+                    if (loginResponse?.success == true) {
+                        Toast.makeText(requireContext(), "Logged in successfully!", Toast.LENGTH_SHORT).show()
+                        navigateToExpenseList()
+                    } else {
+                        Toast.makeText(requireContext(), loginResponse?.message ?: "Login failed", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(requireContext(), "Response failed", Toast.LENGTH_SHORT).show()
+                }
+                animateBtn(binding.loginBtn, response.isSuccessful)
+            }
+
+            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                Toast.makeText(requireContext(), "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                animateBtn(binding.loginBtn, false)
+            }
+        })
+    }
+
+    private fun registerUser(email: String, password: String) {
+        val registerRequest = RegisterRequest(email = email, password = password)
+
+        Api.api.register(registerRequest).enqueue(object : Callback<RegisterResponse> {
+            override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {
+                if (response.isSuccessful) {
+                    val registerResponse = response.body()
+                    if (registerResponse?.success == true) {
+                        Toast.makeText(requireContext(), "Registered successfully!", Toast.LENGTH_SHORT).show()
+//                        navigateToExpenseList()
+                    } else {
+                        Toast.makeText(requireContext(), registerResponse?.message ?: "Registration failed", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(requireContext(), "Response failed: ${response.errorBody()?.string()}", Toast.LENGTH_LONG).show()
+                }
+                animateBtn(binding.registerBtn, response.isSuccessful)
+            }
+
+            override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
+                Toast.makeText(requireContext(), "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                animateBtn(binding.registerBtn, false)
+            }
+        })
+    }
+
+    private fun navigateToExpenseList() {
+        findNavController().navigate(
+            R.id.action_loginScreenFragment_to_listOfExpensesFragment2,
+            null,
+            navOptions { popUpTo(R.id.loginScreenFragment) { inclusive = true }}
+        )
     }
 
     override fun onDestroy() {
