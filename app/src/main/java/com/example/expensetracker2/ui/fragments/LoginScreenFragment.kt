@@ -46,6 +46,9 @@ class LoginScreenFragment : Fragment() {
                 }
             })
         checkEmpty()
+        binding.singUpTv.setOnClickListener {
+            findNavController().navigate(R.id.action_loginScreenFragment_to_registerScreenFragment)
+        }
     }
 
     @SuppressLint("Recycle")
@@ -83,17 +86,6 @@ class LoginScreenFragment : Fragment() {
                 loginUser(email, password)
             }
         }
-
-        binding.registerBtn.setOnClickListener {
-            val email = binding.emailEt.text.toString().trim()
-            val password = binding.passwordEt.text.toString().trim()
-            if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show()
-                animateBtn(binding.registerBtn, false)
-            } else {
-                registerUser(email, password)
-            }
-        }
     }
 
     private fun loginUser(email: String, password: String) {
@@ -118,32 +110,6 @@ class LoginScreenFragment : Fragment() {
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
                 Toast.makeText(requireContext(), "Error: ${t.message}", Toast.LENGTH_SHORT).show()
                 animateBtn(binding.loginBtn, false)
-            }
-        })
-    }
-
-    private fun registerUser(email: String, password: String) {
-        val registerRequest = RegisterRequest(email = email, password = password)
-
-        Api.api.register(registerRequest).enqueue(object : Callback<RegisterResponse> {
-            override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {
-                if (response.isSuccessful) {
-                    val registerResponse = response.body()
-                    if (registerResponse?.success == true) {
-                        Toast.makeText(requireContext(), "Registered successfully!", Toast.LENGTH_SHORT).show()
-//                        navigateToExpenseList()
-                    } else {
-                        Toast.makeText(requireContext(), registerResponse?.message ?: "Registration failed", Toast.LENGTH_SHORT).show()
-                    }
-                } else {
-                    Toast.makeText(requireContext(), "Response failed: ${response.errorBody()?.string()}", Toast.LENGTH_LONG).show()
-                }
-                animateBtn(binding.registerBtn, response.isSuccessful)
-            }
-
-            override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
-                Toast.makeText(requireContext(), "Error: ${t.message}", Toast.LENGTH_SHORT).show()
-                animateBtn(binding.registerBtn, false)
             }
         })
     }
