@@ -24,7 +24,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.expensetracker2.model.Expense
+import com.example.expensetracker2.models.Expense
 import com.example.expensetracker2.utils.ExpenseAdapter
 import com.example.expensetracker2.repository.ExpenseRepository
 import com.example.expensetracker2.R
@@ -54,7 +54,7 @@ class ListOfExpensesFragment : Fragment() {
             findNavController().navigate(
                 R.id.action_listOfExpensesFragment_to_addExpensesFragment2,
                 Bundle().apply {
-                    putString("category", expense.category)
+                    putString("category", expense.category_name)
                     putString("amount", expense.amount)
                     putString("date", expense.date)
                     putString("currency", expense.currency)

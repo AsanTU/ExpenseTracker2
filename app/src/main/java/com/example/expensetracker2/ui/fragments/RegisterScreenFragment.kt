@@ -10,11 +10,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
-import com.example.expensetracker2.Api
+import com.example.expensetracker2.RetrofitClient
 import com.example.expensetracker2.R
-import com.example.expensetracker2.RegisterRequest
-import com.example.expensetracker2.RegisterResponse
-import com.example.expensetracker2.databinding.FragmentLoginScreenBinding
+import com.example.expensetracker2.models.RegisterRequest
+import com.example.expensetracker2.models.SuccessMessageResponse
 import com.example.expensetracker2.databinding.FragmentRegisterScreenBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -74,8 +73,8 @@ class RegisterScreenFragment : Fragment() {
     private fun registerUser(username: String, email: String, password: String) {
         val registerRequest = RegisterRequest(username = username, email = email, password = password)
 
-        Api.api.register(registerRequest).enqueue(object : Callback<RegisterResponse> {
-            override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {
+        RetrofitClient.authService.register(registerRequest).enqueue(object : Callback<SuccessMessageResponse> {
+            override fun onResponse(call: Call<SuccessMessageResponse>, response: Response<SuccessMessageResponse>) {
                 if (response.isSuccessful) {
                     val registerResponse = response.body()
                     if (registerResponse?.success == true) {
@@ -98,7 +97,7 @@ class RegisterScreenFragment : Fragment() {
                 animateBtn(binding.registerBtn, response.isSuccessful)
             }
 
-            override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
+            override fun onFailure(call: Call<SuccessMessageResponse>, t: Throwable) {
                 Toast.makeText(requireContext(), "Error: ${t.message}", Toast.LENGTH_SHORT).show()
                 animateBtn(binding.registerBtn, false)
             }

@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.expensetracker2.R
 import com.example.expensetracker2.databinding.ItemExpenseBinding
-import com.example.expensetracker2.model.Expense
+import com.example.expensetracker2.models.Expense
 
 class ExpenseAdapter(
     private var expenses: MutableList<Expense>,
@@ -50,7 +50,7 @@ class ExpenseAdapter(
         @SuppressLint("SetTextI18n")
         fun bind(expense: Expense) {
             binding.apply {
-                expenseTitleTv.text = expense.category
+                expenseTitleTv.text = expense.name
                 expenseDateTv.text = expense.date
                 expenseAmountTv.text = "${expense.amount} ${expense.currency}"
                 setCategoryIcon(expense.category)

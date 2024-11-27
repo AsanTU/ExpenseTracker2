@@ -12,12 +12,10 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
-import com.example.expensetracker2.Api
-import com.example.expensetracker2.LoginRequest
-import com.example.expensetracker2.LoginResponse
+import com.example.expensetracker2.RetrofitClient
+import com.example.expensetracker2.models.LoginRequest
+import com.example.expensetracker2.models.LoginResponse
 import com.example.expensetracker2.R
-import com.example.expensetracker2.RegisterRequest
-import com.example.expensetracker2.RegisterResponse
 import com.example.expensetracker2.databinding.FragmentLoginScreenBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -91,7 +89,7 @@ class LoginScreenFragment : Fragment() {
     private fun loginUser(email: String, password: String) {
         val loginRequest = LoginRequest(email = email, password = password)
 
-        Api.api.login(loginRequest).enqueue(object : Callback<LoginResponse> {
+        RetrofitClient.authService.login(loginRequest).enqueue(object : Callback<LoginResponse> {
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                 val loginResponse = response.body()
                 if (response.isSuccessful) {
@@ -102,7 +100,7 @@ class LoginScreenFragment : Fragment() {
                         Toast.makeText(requireContext(), loginResponse?.message ?: "Login failed", Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    Toast.makeText(requireContext(), "Response failed", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Response failed", Toast.LENGTH_LONG).show()
                 }
                 animateBtn(binding.loginBtn, response.isSuccessful)
             }
