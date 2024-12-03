@@ -53,7 +53,7 @@ class ExpenseAdapter(
                 expenseTitleTv.text = expense.name
                 expenseDateTv.text = expense.date
                 expenseAmountTv.text = "${expense.amount} ${expense.currency}"
-                setCategoryIcon(expense.category_name) // TODO: Set category icon
+                setCategoryIcon(expense.categoryName) // TODO: Set category icon
                 expenseAmountTv.setTextColor(
                     if (expense.amount.toDouble() >= 0) root.context.getColor(R.color.green)
                     else root.context.getColor(R.color.error_red)

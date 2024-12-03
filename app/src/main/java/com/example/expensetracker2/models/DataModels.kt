@@ -8,8 +8,8 @@ data class Expense(
     val amount: String,
     val currency: String,
     val description: String?,
-    val category_id: Int?,
-    val category_name: String?,
+    val categoryId: Int?,
+    val categoryName: String?,
     val date: String,
     val time: String
 ) : Serializable

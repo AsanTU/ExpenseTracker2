@@ -55,6 +55,34 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@string/name"
+                android:textColor="@color/text_white"
+                android:textSize="16sp"
+                android:layout_marginEnd="16dp"/>
+
+            <EditText
+                android:id="@+id/name_et"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/enter_name"
+                android:inputType="text"
+                android:textColor="@color/text_white"
+                android:textColorHint="@color/light_gray"
+                android:background="@android:color/transparent"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/rounded_edittext"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="@string/amount"
                 android:textColor="@color/text_white"
                 android:textSize="16sp"
@@ -65,7 +93,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="@string/enter_amount_two"
+                android:hint="@string/enter_amount"
                 android:inputType="numberDecimal|numberSigned"
                 android:textColor="@color/text_white"
                 android:textColorHint="@color/light_gray"
@@ -158,7 +186,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/select_date_two"
+                android:text="@string/select_date"
                 android:textColor="@color/light_gray"
                 android:textSize="16sp"/>
 
@@ -167,7 +195,41 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_calendar"
-                android:contentDescription="@string/select_date_three"
+                android:contentDescription="@string/select_date"
+                app:tint="@color/light_blue" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/rounded_edittext"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/time"
+                android:textColor="@color/text_white"
+                android:textSize="16sp"
+                android:layout_marginEnd="16dp"/>
+
+            <TextView
+                android:id="@+id/time_tv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/select_time"
+                android:textColor="@color/light_gray"
+                android:textSize="16sp"/>
+
+            <ImageView
+                android:id="@+id/select_time_btn"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_time"
+                android:contentDescription="@string/select_time"
                 app:tint="@color/light_blue" />
         </LinearLayout>
     </LinearLayout>

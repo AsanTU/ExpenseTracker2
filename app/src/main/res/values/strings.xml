@@ -5,13 +5,14 @@
     <string name="enter_amount">Enter Amount</string>
     <string name="select_date">Select Date</string>
     <string name="add_expense">Add Expense</string>
+    <string name="name">Name</string>
+    <string name="enter_name">Enter name</string>
     <string name="amount">Amount</string>
-    <string name="enter_amount_two">Enter amount</string>
     <string name="currency">Currency</string>
     <string name="add_category">Add category</string>
     <string name="date">Date</string>
-    <string name="select_date_two">Select date</string>
-    <string name="select_date_three">Select date</string>
+    <string name="time">Time</string>
+    <string name="select_time">Select Time</string>
     <string name="make_sure_the_details_are_correct">Make sure the details are correct.</string>
     <string name="save">Save</string>
     <string name="category">Category</string>

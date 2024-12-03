@@ -38,6 +38,11 @@ data class TokenRefreshRequest(
     val refreshToken: String
 )
 
+data class TokenRefreshResponse(
+    @SerializedName("access_token") val accessToken: String? = null,
+    @SerializedName("access_token_expires_at") val accessTokenExpiresAt: String? = null,
+)
+
 data class ExpenseAddRequest(
     val name: String,
     val amount: Double,

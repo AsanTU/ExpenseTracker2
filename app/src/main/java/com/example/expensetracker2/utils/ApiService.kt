@@ -1,7 +1,6 @@
 package com.example.expensetracker2.utils
 
 import android.util.Log
-import com.example.expensetracker2.R
 import com.example.expensetracker2.Secrets
 import com.example.expensetracker2.models.AddResponse
 import com.example.expensetracker2.models.CategoryAddRequest
@@ -13,6 +12,7 @@ import com.example.expensetracker2.models.LoginResponse
 import com.example.expensetracker2.models.RegisterRequest
 import com.example.expensetracker2.models.SuccessMessageResponse
 import com.example.expensetracker2.models.TokenRefreshRequest
+import com.example.expensetracker2.models.TokenRefreshResponse
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -38,7 +38,7 @@ interface AuthService {
 
     // Endpoint to refresh the access token
     @POST("refresh")
-    fun refreshToken(@Body tokenRefreshRequest: TokenRefreshRequest): Call<LoginResponse>
+    fun refreshToken(@Body tokenRefreshRequest: TokenRefreshRequest): Call<TokenRefreshResponse>
 }
 
 interface ExpenseService {
@@ -139,18 +139,24 @@ class AuthInterceptor : Interceptor {
         val accessTokenExpiresAt = SharedPreferencesManager.getAccessTokenExpiresAt()
         val refreshTokenExpiresAt = SharedPreferencesManager.getRefreshTokenExpiresAt()
 
+        // Log when checking the expiration
+        Log.d("AuthInterceptor", "Checking token expiration.")
+
         if (shouldRefreshAuthToken(accessTokenExpiresAt, refreshTokenExpiresAt)) {
+            Log.d("AuthInterceptor", "Refreshing token...")
             // Attempt to refresh the access token
             val newAccessToken = refreshToken()
             if (newAccessToken != null) {
                 SharedPreferencesManager.storeAccessToken(newAccessToken)
                 request = addAuthorizationHeader(request, newAccessToken)
             } else {
+                Log.e("AuthInterceptor", "Token refresh failed. Handling session expiry.")
                 handleFailedRefresh()  // Implement a method to handle session expiry or user logout
             }
         } else {
             val accessToken = SharedPreferencesManager.getAccessToken()
             request = addAuthorizationHeader(request, accessToken)
+            Log.d("AuthInterceptor", "Using existing access token.")
         }
 
         return chain.proceed(request)
@@ -171,6 +177,7 @@ class AuthInterceptor : Interceptor {
                 // Store new expiration times if provided by your backend
                 val responseBody = response.body()
                 responseBody?.accessTokenExpiresAt?.let { SharedPreferencesManager.storeAccessTokenExpiresAt(it) }
+                Log.d("AuthInterceptor", "Token refresh successful.")
                 return responseBody?.accessToken
             } else {
                 Log.e("AuthInterceptor", "Failed to refresh token: ${response.code()}")
@@ -183,15 +190,28 @@ class AuthInterceptor : Interceptor {
     }
 
     private fun shouldRefreshAuthToken(accessTokenExpiration: String?, refreshTokenExpiration: String?): Boolean {
-        if (accessTokenExpiration.isNullOrEmpty() || refreshTokenExpiration.isNullOrEmpty()) return false
+        // Log the input expiration times
+        Log.d("AuthInterceptor", "Checking token expiration. Access Token Expiration: $accessTokenExpiration, Refresh Token Expiration: $refreshTokenExpiration")
+
+        if (accessTokenExpiration.isNullOrEmpty() || refreshTokenExpiration.isNullOrEmpty()) {
+            Log.d("AuthInterceptor", "Expiration times are incomplete, skipping refresh.")
+            return false
+        }
 
         val accessTokenDateTime = LocalDateTime.parse(accessTokenExpiration, DateTimeFormatter.ISO_DATE_TIME)
         val refreshTokenDateTime = LocalDateTime.parse(refreshTokenExpiration, DateTimeFormatter.ISO_DATE_TIME)
         val currentDateTime = LocalDateTime.now(ZoneOffset.UTC)
 
+        // Log the parsed date times
+        Log.d("AuthInterceptor", "Parsed DateTimes: Current: $currentDateTime, Access Token: $accessTokenDateTime, Refresh Token: $refreshTokenDateTime")
+
         // Determine whether the access token needs refreshing or if overall refresh should be handled
-        return currentDateTime.isAfter(accessTokenDateTime.minusMinutes(5)) ||
-                currentDateTime.isAfter(refreshTokenDateTime.minusDays(1))  // Adjust buffer before refresh token expiration
+        val shouldRefresh = currentDateTime.isAfter(accessTokenDateTime.minusMinutes(5)) || currentDateTime.isAfter(refreshTokenDateTime.minusDays(1))  // Adjust buffer before refresh token expiration
+
+        // Log the decision
+        Log.d("AuthInterceptor", "Should refresh token: $shouldRefresh")
+
+        return shouldRefresh
     }
 
     private fun handleFailedRefresh() {

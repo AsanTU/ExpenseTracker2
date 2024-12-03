@@ -35,6 +35,10 @@ class LoginScreenFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentLoginScreenBinding.inflate(inflater, container, false)
+
+        // Clear SharedPreferences on logout
+        SharedPreferencesManager.clearSessionData()
+
         return binding.root
     }
 
