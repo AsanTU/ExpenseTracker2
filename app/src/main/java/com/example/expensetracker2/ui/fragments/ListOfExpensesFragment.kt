@@ -176,7 +176,7 @@ class ListOfExpensesFragment : Fragment() {
 
                     ItemTouchHelper.RIGHT -> {
                         val expense = ExpenseRepository.expenseList[position]
-                        showEditExpenseDialog(expense, position)
+//                        showEditExpenseDialog(expense, position)
                         adapter.notifyItemChanged(position)
                     }
                 }
@@ -215,71 +215,71 @@ class ListOfExpensesFragment : Fragment() {
         itemTouchHelper.attachToRecyclerView(recyclerView)
     }
 
-    @SuppressLint("SetTextI18n")
-    private fun showEditExpenseDialog(expense: Expense, position: Int) {
-        val dialogView =
-            LayoutInflater.from(requireContext()).inflate(R.layout.dialog_edit_expense, null)
-
-        val categorySpinner = dialogView.findViewById<Spinner>(R.id.category_spinner)
-        val dateTextView = dialogView.findViewById<TextView>(R.id.date_text_view)
-        val amountEditText = dialogView.findViewById<EditText>(R.id.amount_edit_text)
-        val currencySpinner = dialogView.findViewById<Spinner>(R.id.currency_spinner)
-
-        amountEditText.setText(expense.amount)
-        dateTextView.text = expense.date
-
-        val categoryAdapter = ArrayAdapter(
-            requireContext(),
-            android.R.layout.simple_spinner_dropdown_item,
-            listOf("Food", "Transport", "Entertainment", "Other")
-        )
-        categorySpinner.adapter = categoryAdapter
-        categorySpinner.setSelection(categoryAdapter.getPosition(expense.category))
-
-        val currencyAdapter = ArrayAdapter(
-            requireContext(),
-            android.R.layout.simple_spinner_dropdown_item,
-            listOf("USD", "EUR", "RUB", "KGS")
-        )
-        currencySpinner.adapter = currencyAdapter
-        currencySpinner.setSelection(currencyAdapter.getPosition(expense.currency))
-
-        dateTextView.setOnClickListener {
-            val calendar = Calendar.getInstance()
-            val year = calendar.get(Calendar.YEAR)
-            val month = calendar.get(Calendar.MONTH)
-            val day = calendar.get(Calendar.DAY_OF_MONTH)
-
-            DatePickerDialog(
-                requireContext(),
-                { _, selectedYear, selectedMonth, selectedDay ->
-                    dateTextView.text = "$selectedDay/${selectedMonth + 1}/$selectedYear"
-                },
-                year,
-                month,
-                day
-            ).show()
-        }
-
-        val dialog = AlertDialog.Builder(requireContext())
-            .setTitle("Edit Expense")
-            .setView(dialogView)
-            .setPositiveButton("Save") { _, _ ->
-                val updatedExpense = Expense(
-                    id = expense.id,
-                    category = categorySpinner.selectedItem.toString(),
-                    date = dateTextView.text.toString(),
-                    amount = amountEditText.text.toString(),
-                    currency = currencySpinner.selectedItem.toString()
-                )
-
-                updateExpense(position, updatedExpense)
-            }
-            .setNegativeButton("Cancel", null)
-            .create()
-
-        dialog.show()
-    }
+//    @SuppressLint("SetTextI18n")
+//    private fun showEditExpenseDialog(expense: Expense, position: Int) {
+//        val dialogView =
+//            LayoutInflater.from(requireContext()).inflate(R.layout.dialog_edit_expense, null)
+//
+//        val categorySpinner = dialogView.findViewById<Spinner>(R.id.category_spinner)
+//        val dateTextView = dialogView.findViewById<TextView>(R.id.date_text_view)
+//        val amountEditText = dialogView.findViewById<EditText>(R.id.amount_edit_text)
+//        val currencySpinner = dialogView.findViewById<Spinner>(R.id.currency_spinner)
+//
+//        amountEditText.setText(expense.amount)
+//        dateTextView.text = expense.date
+//
+//        val categoryAdapter = ArrayAdapter(
+//            requireContext(),
+//            android.R.layout.simple_spinner_dropdown_item,
+//            listOf("Food", "Transport", "Entertainment", "Other")
+//        )
+//        categorySpinner.adapter = categoryAdapter
+//        categorySpinner.setSelection(categoryAdapter.getPosition(expense.category))
+//
+//        val currencyAdapter = ArrayAdapter(
+//            requireContext(),
+//            android.R.layout.simple_spinner_dropdown_item,
+//            listOf("USD", "EUR", "RUB", "KGS")
+//        )
+//        currencySpinner.adapter = currencyAdapter
+//        currencySpinner.setSelection(currencyAdapter.getPosition(expense.currency))
+//
+//        dateTextView.setOnClickListener {
+//            val calendar = Calendar.getInstance()
+//            val year = calendar.get(Calendar.YEAR)
+//            val month = calendar.get(Calendar.MONTH)
+//            val day = calendar.get(Calendar.DAY_OF_MONTH)
+//
+//            DatePickerDialog(
+//                requireContext(),
+//                { _, selectedYear, selectedMonth, selectedDay ->
+//                    dateTextView.text = "$selectedDay/${selectedMonth + 1}/$selectedYear"
+//                },
+//                year,
+//                month,
+//                day
+//            ).show()
+//        }
+//
+//        val dialog = AlertDialog.Builder(requireContext())
+//            .setTitle("Edit Expense")
+//            .setView(dialogView)
+//            .setPositiveButton("Save") { _, _ ->
+//                val updatedExpense = Expense(
+//                    id = expense.id,
+//                    category = categorySpinner.selectedItem.toString(),
+//                    date = dateTextView.text.toString(),
+//                    amount = amountEditText.text.toString(),
+//                    currency = currencySpinner.selectedItem.toString()
+//                )
+//
+//                updateExpense(position, updatedExpense)
+//            }
+//            .setNegativeButton("Cancel", null)
+//            .create()
+//
+//        dialog.show()
+//    }
 
     private fun updateExpense(position: Int, updatedExpense: Expense) {
         ExpenseRepository.expenseList[position] = updatedExpense

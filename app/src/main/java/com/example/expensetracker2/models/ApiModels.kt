@@ -1,5 +1,7 @@
 package com.example.expensetracker2.models
 
+import com.google.gson.annotations.SerializedName
+
 data class SuccessMessageResponse(
     val success: Boolean,
     val message: String
@@ -17,17 +19,23 @@ data class LoginRequest(
     val username: String? = null
 )
 
+data class LoginResponse(
+    val success: Boolean,
+    @SerializedName("access_token") val accessToken: String? = null,
+    @SerializedName("refresh_token") val refreshToken: String? = null,
+    @SerializedName("access_token_expires_at") val accessTokenExpiresAt: String? = null,
+    @SerializedName("refresh_token_expires_at") val refreshTokenExpiresAt: String? = null,
+    val message: String? = null
+)
+
 data class RegisterRequest(
     val email: String,
     val password: String,
     val username: String? = null
 )
 
-data class LoginResponse(
-    val success: Boolean,
-    val access_token: String? = null,
-    val refresh_token: String? = null,
-    val message: String? = null
+data class TokenRefreshRequest(
+    val refreshToken: String
 )
 
 data class ExpenseAddRequest(
@@ -35,7 +43,7 @@ data class ExpenseAddRequest(
     val amount: Double,
     val currency: String,
     val description: String? = null,
-    val category_id: Int? = null,
+    val categoryId: Int? = null,
     val date: String,
     val time: String
 )

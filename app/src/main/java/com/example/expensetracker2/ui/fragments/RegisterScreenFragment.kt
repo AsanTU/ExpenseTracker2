@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
-import com.example.expensetracker2.RetrofitClient
+import com.example.expensetracker2.utils.RetrofitClient
 import com.example.expensetracker2.R
 import com.example.expensetracker2.models.RegisterRequest
 import com.example.expensetracker2.models.SuccessMessageResponse

@@ -14,16 +14,17 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.example.expensetracker2.utils.ApiServiceHelper
 import com.example.expensetracker2.R
-import com.example.expensetracker2.RetrofitClient
+import com.example.expensetracker2.utils.RetrofitClient
 import com.example.expensetracker2.databinding.FragmentAddExpensesBinding
 import com.example.expensetracker2.models.CategoryAddRequest
 import com.example.expensetracker2.models.AddResponse
 import com.example.expensetracker2.models.Expense
 import com.example.expensetracker2.models.ExpenseAddRequest
 import com.example.expensetracker2.models.ExpenseCategory
-import com.example.expensetracker2.models.SuccessMessageResponse
 import com.example.expensetracker2.repository.ExpenseRepository
+import com.example.expensetracker2.utils.SharedPreferencesManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -176,7 +177,8 @@ class AddExpensesFragment : Fragment() {
                         }
                     }
                 } else {
-                    Toast.makeText(requireContext(), "Failed to add category", Toast.LENGTH_SHORT).show()
+                    val errorMessage = ApiServiceHelper.getErrorMessage(response, "Failed to add category.")
+                    Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
                 }
             }
 
@@ -239,9 +241,9 @@ class AddExpensesFragment : Fragment() {
             amount = amount,
             currency = currency,
             description = "description", // Replace with actual input
-            category_id = categoryId,
+            categoryId = categoryId,
             date = date,
-            time = LocalTime.now().toString()
+            time = LocalTime.now().toString(),
         )
 
         addExpense(expenseAddRequest, position, categoryName)
@@ -259,7 +261,7 @@ class AddExpensesFragment : Fragment() {
                                 amount = expenseAddRequest.amount.toString(), // Convert back to String for display
                                 currency = expenseAddRequest.currency,
                                 description = expenseAddRequest.description,
-                                category_id = expenseAddRequest.category_id,
+                                category_id = expenseAddRequest.categoryId,
                                 category_name = selectedCategoryName,
                                 date = expenseAddRequest.date,
                                 time = expenseAddRequest.time
@@ -279,7 +281,8 @@ class AddExpensesFragment : Fragment() {
                         }
                     }
                 } else {
-                    Toast.makeText(requireContext(), "Failed to save expense", Toast.LENGTH_SHORT).show()
+                    val errorMessage = ApiServiceHelper.getErrorMessage(response, "Failed to save expense.")
+                    Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
                 }
             }
 
