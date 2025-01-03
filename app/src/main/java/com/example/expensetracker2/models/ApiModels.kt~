@@ -53,12 +53,6 @@ data class CategoryAddRequest(
     val name: String
 )
 
-data class ExpenseGetResponse(
-    val success: Boolean,
-    val expenses: List<Expense>,
-    val message: String? = null
-)
-
 data class ExpenseAddRequest(
     val name: String,
     val amount: Double,

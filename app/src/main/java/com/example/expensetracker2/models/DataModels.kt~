@@ -1,6 +1,5 @@
 package com.example.expensetracker2.models
 
-import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 data class Expense(
@@ -9,8 +8,8 @@ data class Expense(
     val amount: String,
     val currency: String,
     val description: String?,
-    @SerializedName("category_id") val categoryId: Int?,
-    @SerializedName("category_name") val categoryName: String?,
+    val categoryId: Int?,
+    val categoryName: String?,
     val date: String,
     val time: String
 ) : Serializable

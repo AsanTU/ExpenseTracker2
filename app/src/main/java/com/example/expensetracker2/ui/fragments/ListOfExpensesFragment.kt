@@ -1,5 +1,6 @@
 package com.example.expensetracker2.ui.fragments
 
+//import androidx.recyclerview.widget.RecyclerView
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
@@ -8,29 +9,35 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.expensetracker2.models.Expense
-import com.example.expensetracker2.utils.ExpenseAdapter
-import com.example.expensetracker2.repository.ExpenseRepository
 import com.example.expensetracker2.R
 import com.example.expensetracker2.databinding.FragmentListOfExpensesBinding
+import com.example.expensetracker2.models.Expense
+import com.example.expensetracker2.models.ExpenseGetResponse
+import com.example.expensetracker2.utils.ExpenseAdapter
+import com.example.expensetracker2.utils.RetrofitClient
+import com.example.expensetracker2.utils.Utils
 import java.util.Calendar
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class ListOfExpensesFragment : Fragment() {
 
     private var _binding: FragmentListOfExpensesBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: ExpenseAdapter
+    private val expensesList = mutableListOf<Expense>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,12 +47,17 @@ class ListOfExpensesFragment : Fragment() {
         return binding.root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupBottomNavigationListener()
 
-        adapter = ExpenseAdapter(ExpenseRepository.expenseList) { expense, position ->
+        adapter = ExpenseAdapter(expensesList) { expense, position ->
             findNavController().navigate(
                 R.id.action_listOfExpensesFragment_to_addExpensesFragment,
                 Bundle().apply {
@@ -62,6 +74,7 @@ class ListOfExpensesFragment : Fragment() {
         binding.expenseRv.adapter = adapter
 
 //        setupSwipeToDeleteAndEdit(binding.expenseRv, adapter)
+        fetchExpenses()
 
         binding.filterByDateText.setOnClickListener { showDatePickerDialog() }
         binding.addExpenseBtn.setOnClickListener {
@@ -69,6 +82,38 @@ class ListOfExpensesFragment : Fragment() {
             true.animateBtn(binding.addExpenseBtn)
         }
     }
+
+    private fun fetchExpenses() {
+        RetrofitClient.expenseService.getExpenses().enqueue(object : Callback<ExpenseGetResponse> {
+            override fun onResponse(call: Call<ExpenseGetResponse>, response: Response<ExpenseGetResponse>) {
+                Log.d("ListOfExpensesFragment", "Response code: ${response.code()}")
+                if (response.isSuccessful) {
+                    response.body()?.let { expenseGetResponse ->
+                        if (expenseGetResponse.success) {
+                            val fetchedExpenses = expenseGetResponse.expenses
+                            Log.d("ListOfExpensesFragment", "Fetched expenses: $fetchedExpenses")
+                            expensesList.clear()
+                            expensesList.addAll(fetchedExpenses)
+                            adapter.notifyDataSetChanged()
+                        } else {
+                            val errorMessage = expenseGetResponse.message ?: "Unknown error occurred."
+                            Log.d("ListOfExpensesFragment", "Failed to fetch expenses: $errorMessage")
+                            Utils.showToastMessage(requireContext(), errorMessage)
+                        }
+                    }
+                } else {
+                    Log.d("ListOfExpensesFragment", "Failed to fetch expenses: ${response.errorBody()?.string()}")
+                    Utils.showToastMessage(requireContext(), "Failed to fetch expenses.")
+                }
+            }
+
+            override fun onFailure(call: Call<ExpenseGetResponse>, t: Throwable) {
+                Log.d("ListOfExpensesFragment", "Failed to fetch expenses: ${t.message}")
+                Utils.showToastMessage(requireContext(), "Error: ${t.message}")
+            }
+        })
+    }
+
 
     private fun showDatePickerDialog() {
         val calendar = Calendar.getInstance()
@@ -90,10 +135,8 @@ class ListOfExpensesFragment : Fragment() {
         datePickerDialog.show()
     }
 
-    private fun filterExpensesByDate(selectedData: String) {
-        val filteredExpenses = ExpenseRepository.expenseList.filter { expense ->
-            expense.date == selectedData
-        }
+    private fun filterExpensesByDate(selectedDate: String) {
+        val filteredExpenses = expensesList.filter { it.date == selectedDate }
         adapter.updateExpenses(filteredExpenses)
     }
 
@@ -276,11 +319,11 @@ class ListOfExpensesFragment : Fragment() {
 //        dialog.show()
 //    }
 
-    private fun updateExpense(position: Int, updatedExpense: Expense) {
-        ExpenseRepository.expenseList[position] = updatedExpense
-        adapter.updateItem(updatedExpense)
-        Toast.makeText(requireContext(), "Expense Updated!", Toast.LENGTH_SHORT).show()
-    }
+//    private fun updateExpense(position: Int, updatedExpense: Expense) {
+//        ExpenseRepository.expenseList[position] = updatedExpense
+//        adapter.updateItem(updatedExpense)
+//        Toast.makeText(requireContext(), "Expense Updated!", Toast.LENGTH_SHORT).show()
+//    }
 
     private fun drawSwipeIcons(
         c: Canvas,
@@ -332,11 +375,5 @@ class ListOfExpensesFragment : Fragment() {
         }
 
         c.drawRect(backgroundRect, paint)
-    }
-
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

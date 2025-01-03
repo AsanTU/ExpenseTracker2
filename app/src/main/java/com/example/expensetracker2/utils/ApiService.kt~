@@ -15,6 +15,7 @@ import com.example.expensetracker2.models.RegisterRequest
 import com.example.expensetracker2.models.SuccessMessageResponse
 import com.example.expensetracker2.models.TokenRefreshRequest
 import com.example.expensetracker2.models.TokenRefreshResponse
+import com.google.gson.GsonBuilder
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -79,11 +80,16 @@ object RetrofitClient {
         OkHttpClient.Builder().addInterceptor(AuthInterceptor()).build()
     }
 
+    private val gson = GsonBuilder()
+        .setLenient() // Make Gson lenient to handle malformed JSON
+        .create()
+
     private val retrofit: Retrofit by lazy {
         Retrofit.Builder()
             .baseUrl("$BASE_URL/")
             .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create()).build()
+            .addConverterFactory(GsonConverterFactory.create(gson)) // Use custom Gson
+            .build()
     }
 
     val authService: AuthService by lazy {
