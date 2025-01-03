@@ -43,6 +43,16 @@ data class TokenRefreshResponse(
     @SerializedName("access_token_expires_at") val accessTokenExpiresAt: String? = null,
 )
 
+data class CategoriesGetResponse(
+    val success: Boolean,
+    val categories: List<ExpenseCategory>,
+    val message: String? = null
+)
+
+data class CategoryAddRequest(
+    val name: String
+)
+
 data class ExpenseAddRequest(
     val name: String,
     val amount: Double,
@@ -51,8 +61,4 @@ data class ExpenseAddRequest(
     val categoryId: Int? = null,
     val date: String,
     val time: String
-)
-
-data class CategoryAddRequest(
-    val name: String
 )

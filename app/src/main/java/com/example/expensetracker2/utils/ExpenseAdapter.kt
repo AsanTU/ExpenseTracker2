@@ -53,7 +53,7 @@ class ExpenseAdapter(
                 expenseTitleTv.text = expense.name
                 expenseDateTv.text = expense.date
                 expenseAmountTv.text = "${expense.amount} ${expense.currency}"
-                setCategoryIcon(expense.categoryName) // TODO: Set category icon
+                setCategoryIcon(expense.categoryId) // TODO: Set category icon
                 expenseAmountTv.setTextColor(
                     if (expense.amount.toDouble() >= 0) root.context.getColor(R.color.green)
                     else root.context.getColor(R.color.error_red)
@@ -61,11 +61,12 @@ class ExpenseAdapter(
             }
         }
 
-        private fun setCategoryIcon(category: String?) {
-            val iconRes = when (category) {
-                "Food" -> R.drawable.ic_food
-                "Transport" -> R.drawable.ic_transport
-                "Entertainment" -> R.drawable.ic_entertainment
+        private fun setCategoryIcon(categoryId: Int?) {
+            val iconRes = when (categoryId) {
+                1 -> R.drawable.ic_food
+                2 -> R.drawable.ic_transport
+                3 -> R.drawable.ic_money
+                4 -> R.drawable.ic_entertainment
                 else -> R.drawable.ic_category
             }
             binding.categoryIconIv.setImageResource(iconRes)

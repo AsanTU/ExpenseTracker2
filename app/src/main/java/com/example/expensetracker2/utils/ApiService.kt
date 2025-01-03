@@ -3,6 +3,7 @@ package com.example.expensetracker2.utils
 import android.util.Log
 import com.example.expensetracker2.Secrets
 import com.example.expensetracker2.models.AddResponse
+import com.example.expensetracker2.models.CategoriesGetResponse
 import com.example.expensetracker2.models.CategoryAddRequest
 import com.example.expensetracker2.models.Expense
 import com.example.expensetracker2.models.ExpenseAddRequest
@@ -56,8 +57,8 @@ interface ExpenseService {
 }
 
 interface CategoryService {
-    @GET("")
-    fun getCategories(): Call<List<ExpenseCategory>>
+    @GET(".")
+    fun getCategories(): Call<CategoriesGetResponse>
 
     @POST("add")
     fun addCategory(@Body category: CategoryAddRequest): Call<AddResponse>
@@ -194,8 +195,8 @@ class AuthInterceptor : Interceptor {
         Log.d("AuthInterceptor", "Checking token expiration. Access Token Expiration: $accessTokenExpiration, Refresh Token Expiration: $refreshTokenExpiration")
 
         if (accessTokenExpiration.isNullOrEmpty() || refreshTokenExpiration.isNullOrEmpty()) {
-            Log.d("AuthInterceptor", "Expiration times are incomplete, skipping refresh.")
-            return false
+            Log.d("AuthInterceptor", "Expiration times are incomplete, refreshing tokens.")
+            return true
         }
 
         val accessTokenDateTime = LocalDateTime.parse(accessTokenExpiration, DateTimeFormatter.ISO_DATE_TIME)

@@ -123,6 +123,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/spinner_background"
                 android:padding="12dp"
+                android:layout_margin="12dp"
                 android:popupBackground="@drawable/spinner_dropdown"
                 android:spinnerMode="dropdown" />
         </LinearLayout>
@@ -151,6 +152,7 @@
                 android:background="@drawable/spinner_background"
                 android:popupBackground="@drawable/spinner_dropdown"
                 android:padding="12dp"
+                android:layout_margin="12dp"
                 android:spinnerMode="dropdown"/>
 
             <ImageView

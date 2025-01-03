@@ -12,12 +12,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.expensetracker2.R
 import com.example.expensetracker2.databinding.FragmentAddExpensesBinding
 import com.example.expensetracker2.models.AddResponse
+import com.example.expensetracker2.models.CategoriesGetResponse
 import com.example.expensetracker2.models.CategoryAddRequest
 import com.example.expensetracker2.models.Expense
 import com.example.expensetracker2.models.ExpenseAddRequest
@@ -34,12 +36,7 @@ class AddExpensesFragment : Fragment() {
 
     private var _binding: FragmentAddExpensesBinding? = null
     private val binding get() = _binding!!
-    private val categories = mutableListOf(
-        ExpenseCategory(1, "Food"),
-        ExpenseCategory(2, "Transport"),
-        ExpenseCategory(3, "Entertainment"),
-        ExpenseCategory(4, "Other")
-    )
+    private val categories = mutableListOf<ExpenseCategory>()
 
     private var selectedCalendar: Calendar = Calendar.getInstance()
     val showDateFormat = SimpleDateFormat("dd/MM/yyyy")
@@ -64,12 +61,14 @@ class AddExpensesFragment : Fragment() {
         val position = arguments?.getInt("position", -1) ?: -1
         if (position != -1) {
             val expense = ExpenseRepository.expenseList[position]
-            binding.categorySpinner.setSelection(categories.indexOfFirst { it.id == expense.categoryId })
+            // Select the category upon editing an expense
+            val categoryIndex = categories.indexOfFirst { it.id == expense.categoryId }
+            if (categoryIndex != -1) {
+                binding.categorySpinner.setSelection(categoryIndex)
+            }
             binding.amountEt.setText(expense.amount)
-            binding.dateTv.text =
-                expense.date // This line will override today's date if editing an expense
-            binding.timeTv.text =
-                expense.time // This line will override the current time if editing an expense
+            binding.dateTv.text = expense.date // This line will override today's date if editing an expense
+            binding.timeTv.text = expense.time // This line will override the current time if editing an expense
             binding.currencySpinner.setSelection(getCurrencyIndex(expense.currency))
         }
 
@@ -99,6 +98,38 @@ class AddExpensesFragment : Fragment() {
         }
     }
 
+    private fun fetchCategories() {
+        RetrofitClient.categoryService.getCategories()
+            .enqueue(object : Callback<CategoriesGetResponse> {
+                override fun onResponse(
+                    call: Call<CategoriesGetResponse>, response: Response<CategoriesGetResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        response.body()?.let { categoriesResponse ->
+                            if (categoriesResponse.success) {
+                                // Clear old categories and add new
+                                categories.clear()
+                                categories.addAll(categoriesResponse.categories)
+                                (binding.categorySpinner.adapter as ArrayAdapter<*>).notifyDataSetChanged()
+                            } else {
+                                showToastMessage(categoriesResponse.message ?: "Could not load categories.")
+                            }
+                        }
+                    } else {
+                        // TODO: Make this more abstract. Make a separate function for this in ApiService.
+                        val errorMessage = ApiServiceHelper.getErrorMessage(
+                            response, "Failed to fetch categories."
+                        )
+                        showToastMessage(errorMessage)
+                    }
+                }
+
+                override fun onFailure(call: Call<CategoriesGetResponse>, t: Throwable) {
+                    showToastMessage("Error: ${t.message}")
+                }
+            })
+    }
+
     private fun setInitialDate() {
         val currentDate = showDateFormat.format(selectedCalendar.time)
 
@@ -121,6 +152,18 @@ class AddExpensesFragment : Fragment() {
             setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         }
 
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+            val view = super.getView(position, convertView, parent)
+            view.findViewById<TextView>(android.R.id.text1).text = categories[position].name
+            return view
+        }
+
+        override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+            val view = super.getDropDownView(position, convertView, parent)
+            view.findViewById<TextView>(android.R.id.text1).text = categories[position].name
+            return view
+        }
+
         override fun getItem(position: Int): ExpenseCategory? {
             return categories[position]
         }
@@ -135,6 +178,7 @@ class AddExpensesFragment : Fragment() {
     }
 
     private fun setupCategorySpinner() {
+        fetchCategories()
         val adapter = CategorySpinnerAdapter(requireContext(), categories)
         binding.categorySpinner.adapter = adapter
     }
@@ -149,9 +193,7 @@ class AddExpensesFragment : Fragment() {
                 if (newCategoryName.isNotEmpty()) {
                     addCategory(newCategoryName)
                 } else {
-                    Toast.makeText(
-                        requireContext(), "Category name cannot be empty", Toast.LENGTH_SHORT
-                    ).show()
+                    showToastMessage("Category name cannot be empty")
                 }
                 dialog.dismiss()
             }.setNegativeButton("Cancel") { dialog, _ ->
@@ -181,33 +223,22 @@ class AddExpensesFragment : Fragment() {
                                         name = categoryName
                                     )
                                 )
-                                val adapter =
-                                    binding.categorySpinner.adapter as ArrayAdapter<ExpenseCategory>
-                                adapter.notifyDataSetChanged()
-                                Toast.makeText(
-                                    requireContext(),
-                                    categoryAddResponse.message,
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                (binding.categorySpinner.adapter as ArrayAdapter<*>).notifyDataSetChanged()
+                                showToastMessage(categoryAddResponse.message)
                             } else {
                                 // Handle case when success is false
-                                Toast.makeText(
-                                    requireContext(),
-                                    categoryAddResponse.message,
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                showToastMessage(categoryAddResponse.message)
                             }
                         }
                     } else {
                         val errorMessage =
                             ApiServiceHelper.getErrorMessage(response, "Failed to add category.")
-                        Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
+                        showToastMessage(errorMessage)
                     }
                 }
 
                 override fun onFailure(call: Call<AddResponse>, t: Throwable) {
-                    Toast.makeText(requireContext(), "Error: ${t.message}", Toast.LENGTH_SHORT)
-                        .show()
+                    showToastMessage("Error: ${t.message}")
                 }
             })
     }
@@ -215,8 +246,10 @@ class AddExpensesFragment : Fragment() {
     private fun setupCurrencySpinner() {
         val currencies = listOf("USD", "EUR", "RUB", "KGS")
         val adapter = ArrayAdapter(
-            requireContext(), android.R.layout.simple_spinner_dropdown_item, currencies
-        )
+            requireContext(), android.R.layout.simple_spinner_item, currencies
+        ).apply {
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        }
         binding.currencySpinner.adapter = adapter
     }
 
@@ -235,8 +268,7 @@ class AddExpensesFragment : Fragment() {
                 val date = showDateFormat.format(selectedCalendar.time)
 
                 binding.dateTv.text = date
-                Toast.makeText(requireContext(), "Date Selected: $date", Toast.LENGTH_SHORT)
-                    .show()
+                showToastMessage("Date Selected: $date")
             }, year, month, day
         )
         datePicker.show()
@@ -257,8 +289,7 @@ class AddExpensesFragment : Fragment() {
                 val time = showTimeFormat.format(selectedCalendar.time)
 
                 binding.timeTv.text = time
-                Toast.makeText(requireContext(), "Time Selected: $time", Toast.LENGTH_SHORT)
-                    .show()
+                showToastMessage("Time Selected: $time")
             }, hour, minute, true // Use 24-hour format
         )
         timePicker.show()
@@ -271,20 +302,21 @@ class AddExpensesFragment : Fragment() {
         val name = binding.nameEt.text.toString()
         val amountText = binding.amountEt.text.toString()
         val currency = binding.currencySpinner.selectedItem.toString()
-        val selectedCategory = binding.categorySpinner.selectedItem as ExpenseCategory
+        val categoryIndex = binding.categorySpinner.selectedItemPosition
+        val selectedCategory = categories[categoryIndex]
         val categoryId = selectedCategory.id
         val categoryName = selectedCategory.name
         val date = isoDateFormat.format(selectedCalendar.time)
         val time = isoTimeFormat.format(selectedCalendar.time)
 
         if (amountText.isEmpty() || date == "Select date") {
-            Toast.makeText(requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show()
+            showToastMessage("Please fill in all fields")
             return
         }
 
         val amount = amountText.toDoubleOrNull()
         if (amount == null) {
-            Toast.makeText(requireContext(), "Invalid amount", Toast.LENGTH_SHORT).show()
+            showToastMessage("Invalid amount")
             return
         }
 
@@ -324,33 +356,26 @@ class AddExpensesFragment : Fragment() {
 
                                 if (position != -1) {
                                     ExpenseRepository.expenseList[position] = expense
-                                    Toast.makeText(
-                                        requireContext(), "Expense Updated!", Toast.LENGTH_SHORT
-                                    ).show()
+                                    showToastMessage("Expense Updated!")
                                 } else {
                                     ExpenseRepository.expenseList.add(expense)
-                                    Toast.makeText(
-                                        requireContext(), "Expense Added!", Toast.LENGTH_SHORT
-                                    ).show()
+                                    showToastMessage("Expense Added!")
                                 }
 
                                 findNavController().navigate(R.id.action_addExpensesFragment_to_listOfExpensesFragment)
                             } else {
-                                Toast.makeText(
-                                    requireContext(), addResponse.message, Toast.LENGTH_SHORT
-                                ).show()
+                                showToastMessage(addResponse.message)
                             }
                         }
                     } else {
                         val errorMessage =
                             ApiServiceHelper.getErrorMessage(response, "Failed to save expense.")
-                        Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
+                        showToastMessage(errorMessage)
                     }
                 }
 
                 override fun onFailure(call: Call<AddResponse>, t: Throwable) {
-                    Toast.makeText(requireContext(), "Error: ${t.message}", Toast.LENGTH_SHORT)
-                        .show()
+                    showToastMessage("Error: ${t.message}")
                 }
             })
     }
@@ -381,5 +406,9 @@ class AddExpensesFragment : Fragment() {
             repeatMode = ObjectAnimator.REVERSE
             repeatCount = 1
         }.start()
+    }
+
+    private fun showToastMessage(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
     }
 }

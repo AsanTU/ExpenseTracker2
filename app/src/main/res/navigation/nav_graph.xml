@@ -33,7 +33,7 @@
         android:label="fragment_list_of_expenses"
         tools:layout="@layout/fragment_list_of_expenses" >
         <action
-            android:id="@+id/action_listOfExpensesFragment_to_addExpensesFragment2"
+            android:id="@+id/action_listOfExpensesFragment_to_addExpensesFragment"
             app:destination="@id/addExpensesFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
