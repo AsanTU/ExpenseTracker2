@@ -111,10 +111,9 @@ class ListOfExpensesFragment : Fragment() {
                     response.body()?.let { expenseGetResponse ->
                         if (expenseGetResponse.success) {
                             val fetchedExpenses = expenseGetResponse.expenses
-                            adapter.notifyItemRangeRemoved(0, expensesList.size)
                             expensesList.clear()
                             expensesList.addAll(fetchedExpenses)
-                            adapter.notifyItemRangeInserted(0, fetchedExpenses.size)
+                            adapter.notifyDataSetChanged()
                         } else {
                             val errorMessage = expenseGetResponse.message ?: "Unknown error occurred."
                             Utils.showToastMessage(requireContext(), errorMessage)

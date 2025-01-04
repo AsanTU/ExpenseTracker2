@@ -26,6 +26,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 import java.io.IOException
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -45,7 +46,7 @@ interface AuthService {
 
 interface ExpenseService {
     @GET(".")
-    fun getExpenses(): Call<ExpenseGetResponse>
+    fun getExpenses(@Query("date") date: String): Call<ExpenseGetResponse>
 
     @POST("add")
     fun addExpense(@Body expense: ExpenseAddRequest): Call<AddResponse>

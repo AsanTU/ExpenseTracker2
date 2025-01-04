@@ -114,22 +114,17 @@ class LoginScreenFragment : Fragment() {
                         Toast.makeText(requireContext().applicationContext, "Logged in successfully!", Toast.LENGTH_SHORT).show() // TODO: Make Toasts independent of fragments
                         navigateToExpenseList()
                     } else {
-                        val errorMessage = loginResponse?.message ?: "Login failed"
-                        Log.d("LoginError", errorMessage)
-                        Toast.makeText(requireContext().applicationContext, errorMessage, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext().applicationContext, loginResponse?.message ?: "Login failed", Toast.LENGTH_SHORT).show()
                     }
                 } else {
                     val errorMessage = ApiServiceHelper.getErrorMessage(response, "Failed to log in.")
-                    Log.d("LoginError", errorMessage)
-                    Toast.makeText(requireContext().applicationContext, errorMessage, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext().applicationContext, errorMessage, Toast.LENGTH_LONG).show()
                 }
                 isLoginInProgress = false // Reset flag here
             }
 
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                val errorMessage = "Error: ${t.message}"
-                Log.d("LoginError", errorMessage)
-                Toast.makeText(requireContext().applicationContext, errorMessage, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext().applicationContext, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
                 isLoginInProgress = false // Reset flag here too
             }
         })
