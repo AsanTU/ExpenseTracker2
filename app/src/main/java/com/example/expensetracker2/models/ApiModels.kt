@@ -10,7 +10,7 @@ data class SuccessMessageResponse(
 data class AddResponse(
     val success: Boolean,
     val message: String,
-    val id: Int
+    val id: Int?,
 )
 
 data class LoginRequest(
@@ -59,7 +59,7 @@ data class ExpenseGetResponse(
     val message: String? = null
 )
 
-data class ExpenseAddRequest(
+data class ExpenseUpdateRequest(
     val name: String,
     val amount: Double,
     val currency: String,

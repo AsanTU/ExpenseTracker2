@@ -21,9 +21,8 @@ import com.example.expensetracker2.models.AddResponse
 import com.example.expensetracker2.models.CategoriesGetResponse
 import com.example.expensetracker2.models.CategoryAddRequest
 import com.example.expensetracker2.models.Expense
-import com.example.expensetracker2.models.ExpenseAddRequest
 import com.example.expensetracker2.models.ExpenseCategory
-import com.example.expensetracker2.repository.ExpenseRepository
+import com.example.expensetracker2.models.ExpenseUpdateRequest
 import com.example.expensetracker2.utils.ApiServiceHelper
 import com.example.expensetracker2.utils.RetrofitClient
 import com.example.expensetracker2.utils.Utils
@@ -54,22 +53,24 @@ class AddExpensesFragment : Fragment() {
         setupCategorySpinner()
         setupCurrencySpinner()
 
-        // Here's where you set the current date and time as the default
+        // Set default date and time
         setInitialDate()
         setInitialTime()
 
-        val position = arguments?.getInt("position", -1) ?: -1
-        if (position != -1) {
-            val expense = ExpenseRepository.expenseList[position]
-            // Select the category upon editing an expense
+        // Check if we are editing an expense
+        val expense = arguments?.getParcelable<Expense>("expense") // Deprecated. Might want to change this.
+        if (expense != null) {
+            // Populate fields with existing expense data
+            binding.nameEt.setText(expense.name)
+            binding.amountEt.setText(expense.amount)
+            binding.currencySpinner.setSelection(getCurrencyIndex(expense.currency))
+//            binding.descriptionEt.setText(expense.description)
             val categoryIndex = categories.indexOfFirst { it.id == expense.categoryId }
             if (categoryIndex != -1) {
                 binding.categorySpinner.setSelection(categoryIndex)
             }
-            binding.amountEt.setText(expense.amount)
-            binding.dateTv.text = expense.date // This line will override today's date if editing an expense
-            binding.timeTv.text = expense.time // This line will override the current time if editing an expense
-            binding.currencySpinner.setSelection(getCurrencyIndex(expense.currency))
+            binding.dateTv.text = expense.date
+            binding.timeTv.text = expense.time
         }
 
         binding.addCategoryBtn.setOnClickListener {
@@ -88,7 +89,7 @@ class AddExpensesFragment : Fragment() {
         }
 
         binding.saveExpenseBtn.setOnClickListener {
-            saveExpense(position)
+            saveExpense(expense) // Pass expense if editing, null if adding
             true.animateBtn(binding.saveExpenseBtn)
         }
 
@@ -97,6 +98,7 @@ class AddExpensesFragment : Fragment() {
             animateView(binding.arrowBackIc)
         }
     }
+
 
     private fun fetchCategories() {
         RetrofitClient.categoryService.getCategories()
@@ -219,7 +221,7 @@ class AddExpensesFragment : Fragment() {
                                 // Update local categories list and UI
                                 categories.add(
                                     ExpenseCategory(
-                                        id = categoryAddResponse.id, // Using ID from response
+                                        id = categoryAddResponse.id ?: 0, // Using ID from response
                                         name = categoryName
                                     )
                                 )
@@ -295,19 +297,15 @@ class AddExpensesFragment : Fragment() {
         timePicker.show()
     }
 
-    private fun saveExpense(position: Int) {
-        val isoDateFormat = SimpleDateFormat("yyyy-MM-dd")
-        val isoTimeFormat = SimpleDateFormat("HH:mm:ss")
-
+    private fun saveExpense(expense: Expense?) {
         val name = binding.nameEt.text.toString()
         val amountText = binding.amountEt.text.toString()
         val currency = binding.currencySpinner.selectedItem.toString()
         val categoryIndex = binding.categorySpinner.selectedItemPosition
         val selectedCategory = categories[categoryIndex]
         val categoryId = selectedCategory.id
-        val categoryName = selectedCategory.name
-        val date = isoDateFormat.format(selectedCalendar.time)
-        val time = isoTimeFormat.format(selectedCalendar.time)
+        val date = Utils.ISO_DATE_FORMAT.format(selectedCalendar.time)
+        val time = Utils.ISO_TIME_FORMAT.format(selectedCalendar.time)
 
         if (amountText.isEmpty() || date == "Select date") {
             Utils.showToastMessage(requireContext(), "Please fill in all fields")
@@ -320,21 +318,27 @@ class AddExpensesFragment : Fragment() {
             return
         }
 
-        val expenseAddRequest = ExpenseAddRequest(
+        val expenseRequest = ExpenseUpdateRequest(
             name = name,
             amount = amount,
             currency = currency,
-            description = "description", // Replace with actual input
+            description = "added description", // Replace with actual input
             categoryId = categoryId,
             date = date,
             time = time,
         )
 
-        addExpense(expenseAddRequest, position, categoryName)
+        if (expense == null) {
+            // Add a new expense
+            addExpense(expenseRequest)
+        } else {
+            // Edit the existing expense
+            editExpense(expense.id, expenseRequest)
+        }
     }
 
     private fun addExpense(
-        expenseAddRequest: ExpenseAddRequest, position: Int, selectedCategoryName: String
+        expenseAddRequest: ExpenseUpdateRequest
     ) {
         RetrofitClient.expenseService.addExpense(expenseAddRequest)
             .enqueue(object : Callback<AddResponse> {
@@ -342,26 +346,8 @@ class AddExpensesFragment : Fragment() {
                     if (response.isSuccessful) {
                         response.body()?.let { addResponse ->
                             if (addResponse.success) {
-                                val expense = Expense(
-                                    id = addResponse.id,
-                                    name = expenseAddRequest.name,
-                                    amount = expenseAddRequest.amount.toString(), // Convert back to String for display
-                                    currency = expenseAddRequest.currency,
-                                    description = expenseAddRequest.description,
-                                    categoryId = expenseAddRequest.categoryId,
-                                    categoryName = selectedCategoryName,
-                                    date = expenseAddRequest.date,
-                                    time = expenseAddRequest.time
-                                )
-
-                                if (position != -1) {
-                                    ExpenseRepository.expenseList[position] = expense
-                                    Utils.showToastMessage(requireContext(), "Expense Updated!")
-                                } else {
-                                    ExpenseRepository.expenseList.add(expense)
-                                    Utils.showToastMessage(requireContext(), "Expense Added!")
-                                }
-
+                                Utils.showToastMessage(requireContext(), "Expense Added!")
+                                // Navigate back to the list of expenses upon success
                                 findNavController().navigate(R.id.action_addExpensesFragment_to_listOfExpensesFragment)
                             } else {
                                 Utils.showToastMessage(requireContext(), addResponse.message)
@@ -370,6 +356,33 @@ class AddExpensesFragment : Fragment() {
                     } else {
                         val errorMessage =
                             ApiServiceHelper.getErrorMessage(response, "Failed to save expense.")
+                        Utils.showToastMessage(requireContext(), errorMessage)
+                    }
+                }
+
+                override fun onFailure(call: Call<AddResponse>, t: Throwable) {
+                    Utils.showToastMessage(requireContext(), "Error: ${t.message}")
+                }
+            })
+    }
+
+    private fun editExpense(expenseId: Int, expenseUpdateRequest: ExpenseUpdateRequest) {
+        RetrofitClient.expenseService.editExpense(expenseId, expenseUpdateRequest)
+            .enqueue(object : Callback<AddResponse> {
+                override fun onResponse(call: Call<AddResponse>, response: Response<AddResponse>) {
+                    if (response.isSuccessful) {
+                        response.body()?.let { updateResponse ->
+                            if (updateResponse.success) {
+                                Utils.showToastMessage(requireContext(), "Expense Updated!")
+                                // Navigate back to the list of expenses upon success
+                                findNavController().navigate(R.id.action_addExpensesFragment_to_listOfExpensesFragment)
+                            } else {
+                                Utils.showToastMessage(requireContext(), updateResponse.message)
+                            }
+                        }
+                    } else {
+                        val errorMessage =
+                            ApiServiceHelper.getErrorMessage(response, "Failed to edit expense.")
                         Utils.showToastMessage(requireContext(), errorMessage)
                     }
                 }

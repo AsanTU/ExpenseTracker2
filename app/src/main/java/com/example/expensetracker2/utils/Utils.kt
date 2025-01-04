@@ -11,6 +11,7 @@ object Utils {
         Toast.makeText(context, message, Toast.LENGTH_LONG).show()
     }
 
-    val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-    val DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    val ISO_DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    val ISO_TIME_FORMAT = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+    val ISO_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 }

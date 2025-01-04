@@ -1,6 +1,5 @@
 package com.example.expensetracker2.ui.fragments
 
-//import androidx.recyclerview.widget.RecyclerView
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
@@ -9,7 +8,6 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,9 +27,7 @@ import com.example.expensetracker2.utils.Utils
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.text.ParseException
 import java.time.LocalDate
-import java.util.Calendar
 
 class ListOfExpensesFragment : Fragment() {
 
@@ -59,15 +55,12 @@ class ListOfExpensesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupBottomNavigationListener()
 
-        adapter = ExpenseAdapter(expensesList) { expense, position ->
+        adapter = ExpenseAdapter(expensesList) { expense, _ ->
+            // Navigate to AddExpensesFragment with expense details
             findNavController().navigate(
                 R.id.action_listOfExpensesFragment_to_addExpensesFragment,
                 Bundle().apply {
-                    putString("category", expense.categoryName)
-                    putString("amount", expense.amount)
-                    putString("date", expense.date)
-                    putString("currency", expense.currency)
-                    putInt("position", position)
+                    putParcelable("expense", expense)
                 }
             )
         }
@@ -95,11 +88,11 @@ class ListOfExpensesFragment : Fragment() {
     }
 
     private fun updateDateDisplay() {
-        binding.filterByDateText.text = selectedDate.format(Utils.DATE_FORMATTER)
+        binding.filterByDateText.text = selectedDate.format(Utils.ISO_DATE_FORMATTER)
     }
 
     private fun fetchExpenses() {
-        val dateString = selectedDate.format(Utils.DATE_FORMATTER)
+        val dateString = selectedDate.format(Utils.ISO_DATE_FORMATTER)
 
         val call = RetrofitClient.expenseService.getExpenses(dateString)
         call.enqueue(object : Callback<ExpenseGetResponse> {
@@ -147,27 +140,6 @@ class ListOfExpensesFragment : Fragment() {
         )
         datePickerDialog.show()
     }
-
-//    private fun showDatePickerDialog() {
-//        val calendar = Calendar.getInstance()
-//        val (year, month, day) = getSelectedDate(calendar)
-//
-//        val datePickerDialog = DatePickerDialog(
-//            requireContext(),
-//            { _, selectedYear, selectedMonth, selectedDay ->
-//                calendar.set(Calendar.YEAR, selectedYear)
-//                calendar.set(Calendar.MONTH, selectedMonth)
-//                calendar.set(Calendar.DAY_OF_MONTH, selectedDay)
-//                val selectedDate = Utils.DATE_FORMAT.format(calendar.time)
-//                binding.filterByDateText.text = selectedDate
-//                filterExpensesByDate(selectedDate)
-//            },
-//            year,
-//            month,
-//            day
-//        )
-//        datePickerDialog.show()
-//    }
 
 
     private fun setupBottomNavigationListener() {

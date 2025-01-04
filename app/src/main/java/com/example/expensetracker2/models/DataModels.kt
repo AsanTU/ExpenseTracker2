@@ -1,8 +1,11 @@
 package com.example.expensetracker2.models
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 import java.io.Serializable
 
+@Parcelize
 data class Expense(
     val id: Int,
     val name: String,
@@ -13,7 +16,7 @@ data class Expense(
     @SerializedName("category_name") val categoryName: String?,
     val date: String,
     val time: String
-) : Serializable
+) : Serializable, Parcelable
 
 data class ExpenseCategory(
     val id: Int,

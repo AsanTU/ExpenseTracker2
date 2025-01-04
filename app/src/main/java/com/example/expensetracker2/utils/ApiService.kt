@@ -5,10 +5,9 @@ import com.example.expensetracker2.Secrets
 import com.example.expensetracker2.models.AddResponse
 import com.example.expensetracker2.models.CategoriesGetResponse
 import com.example.expensetracker2.models.CategoryAddRequest
-import com.example.expensetracker2.models.Expense
-import com.example.expensetracker2.models.ExpenseAddRequest
 import com.example.expensetracker2.models.ExpenseCategory
 import com.example.expensetracker2.models.ExpenseGetResponse
+import com.example.expensetracker2.models.ExpenseUpdateRequest
 import com.example.expensetracker2.models.LoginRequest
 import com.example.expensetracker2.models.LoginResponse
 import com.example.expensetracker2.models.RegisterRequest
@@ -25,6 +24,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 import java.io.IOException
@@ -49,10 +49,10 @@ interface ExpenseService {
     fun getExpenses(@Query("date") date: String): Call<ExpenseGetResponse>
 
     @POST("add")
-    fun addExpense(@Body expense: ExpenseAddRequest): Call<AddResponse>
+    fun addExpense(@Body expense: ExpenseUpdateRequest): Call<AddResponse>
 
-    @POST("edit/{id}")
-    fun editExpense(@Path("id") id: String, @Body expense: Expense): Call<Expense>
+    @PUT("{id}")
+    fun editExpense(@Path("id") id: Int, @Body expenseUpdateRequest: ExpenseUpdateRequest): Call<AddResponse>
 
     @POST("delete/{id}")
     fun deleteExpense(@Path("id") id: String): Call<Void>
