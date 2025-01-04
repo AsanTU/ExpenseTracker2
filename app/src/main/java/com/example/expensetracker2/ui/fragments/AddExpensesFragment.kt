@@ -29,7 +29,6 @@ import com.example.expensetracker2.utils.Utils
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.text.SimpleDateFormat
 
 class AddExpensesFragment : Fragment() {
 
@@ -38,8 +37,6 @@ class AddExpensesFragment : Fragment() {
     private val categories = mutableListOf<ExpenseCategory>()
 
     private var selectedCalendar: Calendar = Calendar.getInstance()
-    val showDateFormat = SimpleDateFormat("dd/MM/yyyy")
-    val showTimeFormat = SimpleDateFormat("HH:mm:ss")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -63,14 +60,31 @@ class AddExpensesFragment : Fragment() {
             // Populate fields with existing expense data
             binding.nameEt.setText(expense.name)
             binding.amountEt.setText(expense.amount)
-            binding.currencySpinner.setSelection(getCurrencyIndex(expense.currency))
 //            binding.descriptionEt.setText(expense.description)
             val categoryIndex = categories.indexOfFirst { it.id == expense.categoryId }
             if (categoryIndex != -1) {
                 binding.categorySpinner.setSelection(categoryIndex)
             }
-            binding.dateTv.text = expense.date
-            binding.timeTv.text = expense.time
+
+            // Format and display the date
+            expense.date.let {
+                try {
+                    val parsedDate = Utils.parseInputDate(it)
+                    binding.dateTv.text = parsedDate?.let { Utils.formatShowDate(parsedDate) } ?: it
+                } catch (e: Exception) {
+                    binding.dateTv.text = it // Fallback to original if parsing fails
+                }
+            }
+
+            // Format and display the time
+            expense.time.let {
+                try {
+                    val parsedTime = Utils.parseInputTime(it)
+                    binding.timeTv.text = parsedTime?.let { Utils.formatShowTime(parsedTime) } ?: it
+                } catch (e: Exception) {
+                    binding.timeTv.text = it // Fallback to original if parsing fails
+                }
+            }
         }
 
         binding.addCategoryBtn.setOnClickListener {
@@ -133,14 +147,14 @@ class AddExpensesFragment : Fragment() {
     }
 
     private fun setInitialDate() {
-        val currentDate = showDateFormat.format(selectedCalendar.time)
+        val currentDate = Utils.formatShowDate(selectedCalendar.time)
 
         // Set the formatted date string to the TextView
         binding.dateTv.text = currentDate
     }
 
     private fun setInitialTime() {
-        val currentTime = showTimeFormat.format(selectedCalendar.time)
+        val currentTime = Utils.formatShowTime(selectedCalendar.time)
 
         // Set the formatted time string to the TextView
         binding.timeTv.text = currentTime
@@ -166,7 +180,7 @@ class AddExpensesFragment : Fragment() {
             return view
         }
 
-        override fun getItem(position: Int): ExpenseCategory? {
+        override fun getItem(position: Int): ExpenseCategory {
             return categories[position]
         }
 
@@ -267,7 +281,7 @@ class AddExpensesFragment : Fragment() {
                 selectedCalendar.set(Calendar.MONTH, selectedMonth)
                 selectedCalendar.set(Calendar.DAY_OF_MONTH, selectedDay)
 
-                val date = showDateFormat.format(selectedCalendar.time)
+                val date = Utils.formatShowDate(selectedCalendar.time)
 
                 binding.dateTv.text = date
                 Utils.showToastMessage(requireContext(), "Date Selected: $date")
@@ -288,7 +302,7 @@ class AddExpensesFragment : Fragment() {
                 selectedCalendar.set(Calendar.MINUTE, selectedMinute)
                 selectedCalendar.set(Calendar.SECOND, 0)
 
-                val time = showTimeFormat.format(selectedCalendar.time)
+                val time = Utils.formatShowTime(selectedCalendar.time)
 
                 binding.timeTv.text = time
                 Utils.showToastMessage(requireContext(), "Time Selected: $time")
@@ -304,8 +318,8 @@ class AddExpensesFragment : Fragment() {
         val categoryIndex = binding.categorySpinner.selectedItemPosition
         val selectedCategory = categories[categoryIndex]
         val categoryId = selectedCategory.id
-        val date = Utils.ISO_DATE_FORMAT.format(selectedCalendar.time)
-        val time = Utils.ISO_TIME_FORMAT.format(selectedCalendar.time)
+        val date = Utils.formatIsoDate(selectedCalendar.time)
+        val time = Utils.formatIsoTime(selectedCalendar.time)
 
         if (amountText.isEmpty() || date == "Select date") {
             Utils.showToastMessage(requireContext(), "Please fill in all fields")
@@ -398,11 +412,6 @@ class AddExpensesFragment : Fragment() {
             duration = 300
             start()
         }
-    }
-
-    private fun getCurrencyIndex(currency: String): Int {
-        val currencies = listOf("USD", "EUR", "RUB", "KGS")
-        return currencies.indexOf(currency)
     }
 
     private fun Boolean.animateBtn(button: View) {
