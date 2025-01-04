@@ -20,6 +20,7 @@ import com.example.expensetracker2.databinding.FragmentLoginScreenBinding
 import com.example.expensetracker2.models.LoginRequest
 import com.example.expensetracker2.models.LoginResponse
 import com.example.expensetracker2.utils.SharedPreferencesManager
+import com.example.expensetracker2.utils.Utils
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -86,9 +87,9 @@ class LoginScreenFragment : Fragment() {
             val email = binding.emailEt.text.toString().trim()
             val password = binding.passwordEt.text.toString().trim()
             if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(requireContext().applicationContext, "Please fill in all fields", Toast.LENGTH_SHORT).show()
+                Utils.showToastMessage(requireContext().applicationContext, "Please fill in all fields")
             } else if (!isValidEmail(email)) {
-                Toast.makeText(requireContext().applicationContext, "Please enter a valid email address", Toast.LENGTH_SHORT).show()
+                Utils.showToastMessage(requireContext().applicationContext, "Please enter a valid email address")
             } else {
                 isLoginInProgress = true
                 loginUser(email, password)
@@ -111,20 +112,25 @@ class LoginScreenFragment : Fragment() {
                         loginResponse.accessTokenExpiresAt?.let { SharedPreferencesManager.storeAccessTokenExpiresAt(it) }
                         loginResponse.refreshTokenExpiresAt?.let { SharedPreferencesManager.storeRefreshTokenExpiresAt(it) }
 
-                        Toast.makeText(requireContext().applicationContext, "Logged in successfully!", Toast.LENGTH_SHORT).show() // TODO: Make Toasts independent of fragments
+                        Utils.showToastMessage(requireContext().applicationContext, "Logged in successfully!")
                         navigateToExpenseList()
                     } else {
-                        Toast.makeText(requireContext().applicationContext, loginResponse?.message ?: "Login failed", Toast.LENGTH_SHORT).show()
+                        val errorMessage = loginResponse?.message ?: "Login failed"
+                        Log.d("LoginError", errorMessage)
+                        Utils.showToastMessage(requireContext().applicationContext, errorMessage)
                     }
                 } else {
                     val errorMessage = ApiServiceHelper.getErrorMessage(response, "Failed to log in.")
-                    Toast.makeText(requireContext().applicationContext, errorMessage, Toast.LENGTH_LONG).show()
+                    Log.d("LoginError", errorMessage)
+                    Utils.showToastMessage(requireContext().applicationContext, errorMessage)
                 }
                 isLoginInProgress = false // Reset flag here
             }
 
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                Toast.makeText(requireContext().applicationContext, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                val errorMessage = "Error: ${t.message}"
+                Log.d("LoginError", errorMessage)
+                Utils.showToastMessage(requireContext().applicationContext, errorMessage)
                 isLoginInProgress = false // Reset flag here too
             }
         })
