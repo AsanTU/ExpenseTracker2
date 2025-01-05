@@ -27,6 +27,7 @@
     <string name="convert">Convert</string>
     <string name="result">Result:</string>
     <string name="expenses">Expenses</string>
+    <string name="conversion">Conversion</string>
     <string name="filter_icon">Filter Icon</string>
     <string name="filter_by_date">Filter by date</string>
     <string name="add_expense_two">Add Expense</string>

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/nav_expenses"
+        android:id="@+id/listOfExpensesFragment"
         android:icon="@drawable/ic_list"
-        android:title="Expenses"/>
+        android:title="@string/expenses"/>
 
     <item
-        android:id="@+id/nav_conversion"
+        android:id="@+id/conversionFragment"
         android:icon="@drawable/ic_conversion"
-        android:title="Conversion"/>
+        android:title="@string/conversion"/>
 
     <item
-        android:id="@+id/nav_settings"
+        android:id="@+id/settingsFragment"
         android:icon="@drawable/ic_settings"
-        android:title="Settings"/>
+        android:title="@string/settings"/>
 </menu>

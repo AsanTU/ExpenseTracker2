@@ -36,7 +36,6 @@ class ConversionFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupBottomNavigationListener()
 
         val adapter = ArrayAdapter(
             requireContext(),
@@ -92,41 +91,6 @@ class ConversionFragment : Fragment() {
             }
         )
         Volley.newRequestQueue(requireContext()).add(request)
-    }
-
-    private fun setupBottomNavigationListener() {
-        binding.bottomNavigation.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_expenses -> {
-                    val navOptions = NavOptions.Builder()
-                        .setPopEnterAnim(R.anim.slide_in_right)
-                        .setPopExitAnim(R.anim.slide_out_left)
-                        .build()
-                    findNavController().navigate(R.id.listOfExpensesFragment, null, navOptions)
-                    true
-                }
-
-                R.id.nav_conversion -> {
-                    val navOptions = NavOptions.Builder()
-                        .setPopEnterAnim(R.anim.slide_in_right)
-                        .setPopExitAnim(R.anim.slide_out_left)
-                        .build()
-                    findNavController().navigate(R.id.conversionFragment, null, navOptions)
-                    true
-                }
-
-                R.id.nav_settings -> {
-                    val navOptions = NavOptions.Builder()
-                        .setPopEnterAnim(R.anim.slide_in_left)
-                        .setPopExitAnim(R.anim.slide_out_right)
-                        .build()
-                    findNavController().navigate(R.id.settingsFragment, null, navOptions)
-                    true
-                }
-
-                else -> false
-            }
-        }
     }
 
     private fun Boolean.animateBtn(button: View) {

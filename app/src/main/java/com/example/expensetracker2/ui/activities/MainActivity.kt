@@ -3,16 +3,21 @@ package com.example.expensetracker2.ui.activities
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.view.ViewPropertyAnimator
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.setupWithNavController
 import com.example.expensetracker2.R
 import com.example.expensetracker2.utils.SharedPreferencesManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
-@Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {
+    private lateinit var bottomNavigationView: BottomNavigationView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -36,7 +41,34 @@ class MainActivity : AppCompatActivity() {
 
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        navHostFragment.navController
+
+        bottomNavigationView = findViewById(R.id.bottom_navigation)
+        bottomNavigationView.visibility = View.GONE
+
+        navHostFragment.navController.addOnDestinationChangedListener { _, destination, _ ->
+            if (destination.id in setOf(R.id.listOfExpensesFragment, R.id.conversionFragment, R.id.settingsFragment)) {
+                if (bottomNavigationView.visibility != View.VISIBLE) {
+                    bottomNavigationView.translationY = bottomNavigationView.height.toFloat()
+                    bottomNavigationView.animate().apply {
+                        translationY(0f)
+                        duration = 300 // Set the animation duration to 300 milliseconds
+                        withStartAction { bottomNavigationView.visibility = View.VISIBLE }
+                        start()
+                    }
+                }
+            } else {
+                if (bottomNavigationView.visibility != View.GONE) {
+                    bottomNavigationView.animate().apply {
+                        translationY(bottomNavigationView.height.toFloat())
+                        duration = 300 // Set the animation duration to 300 milliseconds
+                        withEndAction { bottomNavigationView.visibility = View.GONE }
+                        start()
+                    }
+                }
+            }
+        }
+
+        bottomNavigationView.setupWithNavController(navHostFragment.navController)
     }
 
     override fun onResume() {

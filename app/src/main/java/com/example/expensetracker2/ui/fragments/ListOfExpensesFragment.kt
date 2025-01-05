@@ -53,7 +53,6 @@ class ListOfExpensesFragment : Fragment() {
     @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupBottomNavigationListener()
 
         adapter = ExpenseAdapter(expensesList) { expense, _ ->
             // Navigate to SaveExpenseFragment with expense details
@@ -139,29 +138,6 @@ class ListOfExpensesFragment : Fragment() {
             year, month, day
         )
         datePickerDialog.show()
-    }
-
-    private fun setupBottomNavigationListener() {
-        binding.bottomNavigation.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_expenses -> {
-                    findNavController().navigate(R.id.listOfExpensesFragment)
-                    true
-                }
-
-                R.id.nav_conversion -> {
-                    findNavController().navigate(R.id.conversionFragment)
-                    true
-                }
-
-                R.id.nav_settings -> {
-                    findNavController().navigate(R.id.settingsFragment)
-                    true
-                }
-
-                else -> false
-            }
-        }
     }
 
     private fun Boolean.animateBtn(button: View) {
