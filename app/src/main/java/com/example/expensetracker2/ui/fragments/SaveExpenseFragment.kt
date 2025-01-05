@@ -16,7 +16,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.expensetracker2.R
-import com.example.expensetracker2.databinding.FragmentAddExpensesBinding
+import com.example.expensetracker2.databinding.FragmentSaveExpenseBinding
 import com.example.expensetracker2.models.AddResponse
 import com.example.expensetracker2.models.CategoriesGetResponse
 import com.example.expensetracker2.models.CategoryAddRequest
@@ -30,9 +30,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class AddExpensesFragment : Fragment() {
+class SaveExpenseFragment : Fragment() {
 
-    private var _binding: FragmentAddExpensesBinding? = null
+    private var _binding: FragmentSaveExpenseBinding? = null
     private val binding get() = _binding!!
     private val categories = mutableListOf<ExpenseCategory>()
 
@@ -41,7 +41,7 @@ class AddExpensesFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentAddExpensesBinding.inflate(inflater, container, false)
+        _binding = FragmentSaveExpenseBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -57,6 +57,9 @@ class AddExpensesFragment : Fragment() {
         // Check if we are editing an expense
         val expense = arguments?.getParcelable<Expense>("expense") // Deprecated. Might want to change this.
         if (expense != null) {
+
+            binding.titleTv.text = getString(R.string.edit_expense)
+
             // Populate fields with existing expense data
             binding.nameEt.setText(expense.name)
             binding.amountEt.setText(expense.amount)
@@ -85,6 +88,8 @@ class AddExpensesFragment : Fragment() {
                     binding.timeTv.text = it // Fallback to original if parsing fails
                 }
             }
+        } else {
+            binding.titleTv.text = getString(R.string.add_expense)
         }
 
         binding.addCategoryBtn.setOnClickListener {
@@ -111,8 +116,17 @@ class AddExpensesFragment : Fragment() {
             findNavController().navigate(R.id.action_addExpensesFragment_to_listOfExpensesFragment)
             animateView(binding.arrowBackIc)
         }
-    }
 
+        // Set a focus change listener on the description EditText
+        binding.descriptionEt.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                // If the EditText gains focus, scroll the ScrollView to bring the EditText into view
+                binding.scrollView.post {
+                    binding.scrollView.smoothScrollTo(0, binding.descriptionEt.bottom)
+                }
+            }
+        }
+    }
 
     private fun fetchCategories() {
         RetrofitClient.categoryService.getCategories()

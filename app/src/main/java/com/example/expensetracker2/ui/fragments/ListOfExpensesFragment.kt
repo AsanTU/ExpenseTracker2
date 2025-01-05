@@ -56,7 +56,7 @@ class ListOfExpensesFragment : Fragment() {
         setupBottomNavigationListener()
 
         adapter = ExpenseAdapter(expensesList) { expense, _ ->
-            // Navigate to AddExpensesFragment with expense details
+            // Navigate to SaveExpenseFragment with expense details
             findNavController().navigate(
                 R.id.action_listOfExpensesFragment_to_addExpensesFragment,
                 Bundle().apply {
@@ -141,34 +141,21 @@ class ListOfExpensesFragment : Fragment() {
         datePickerDialog.show()
     }
 
-
     private fun setupBottomNavigationListener() {
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_expenses -> {
-                    val navOptions = NavOptions.Builder()
-                        .setPopEnterAnim(R.anim.slide_in_right)
-                        .setPopExitAnim(R.anim.slide_out_left)
-                        .build()
-                    findNavController().navigate(R.id.listOfExpensesFragment, null, navOptions)
+                    findNavController().navigate(R.id.listOfExpensesFragment)
                     true
                 }
 
                 R.id.nav_conversion -> {
-                    val navOptions = NavOptions.Builder()
-                        .setPopEnterAnim(R.anim.slide_in_right)
-                        .setPopExitAnim(R.anim.slide_out_left)
-                        .build()
-                    findNavController().navigate(R.id.conversionFragment, null, navOptions)
+                    findNavController().navigate(R.id.conversionFragment)
                     true
                 }
 
                 R.id.nav_settings -> {
-                    val navOptions = NavOptions.Builder()
-                        .setPopEnterAnim(R.anim.slide_in_left)
-                        .setPopExitAnim(R.anim.slide_out_right)
-                        .build()
-                    findNavController().navigate(R.id.settingsFragment, null, navOptions)
+                    findNavController().navigate(R.id.settingsFragment)
                     true
                 }
 

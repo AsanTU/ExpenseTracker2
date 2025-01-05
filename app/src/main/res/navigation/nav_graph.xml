@@ -56,9 +56,9 @@
     </fragment>
     <fragment
         android:id="@+id/addExpensesFragment"
-        android:name="com.example.expensetracker2.ui.fragments.AddExpensesFragment"
+        android:name="com.example.expensetracker2.ui.fragments.SaveExpenseFragment"
         android:label="fragment_add_expenses"
-        tools:layout="@layout/fragment_add_expenses" >
+        tools:layout="@layout/fragment_save_expense" >
         <action
             android:id="@+id/action_addExpensesFragment_to_listOfExpensesFragment"
             app:destination="@id/listOfExpensesFragment"
