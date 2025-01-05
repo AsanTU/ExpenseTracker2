@@ -18,6 +18,9 @@
     <string name="category">Category</string>
     <string name="currency_converter">Currency Converter</string>
     <string name="enter_amount_three">Enter amount</string>
+    <string name="description">Description</string>
+    <string name="enter_description">Enter description</string>
+    <string name="back">Back Button</string>
     <string name="from">From</string>
     <string name="to">To</string>
     <string name="convert">Convert</string>

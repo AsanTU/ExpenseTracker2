@@ -60,7 +60,7 @@ class AddExpensesFragment : Fragment() {
             // Populate fields with existing expense data
             binding.nameEt.setText(expense.name)
             binding.amountEt.setText(expense.amount)
-//            binding.descriptionEt.setText(expense.description)
+            binding.descriptionEt.setText(expense.description)
             val categoryIndex = categories.indexOfFirst { it.id == expense.categoryId }
             if (categoryIndex != -1) {
                 binding.categorySpinner.setSelection(categoryIndex)
@@ -320,6 +320,7 @@ class AddExpensesFragment : Fragment() {
         val categoryId = selectedCategory.id
         val date = Utils.formatIsoDate(selectedCalendar.time)
         val time = Utils.formatIsoTime(selectedCalendar.time)
+        val description = binding.descriptionEt.text.toString()
 
         if (amountText.isEmpty() || date == "Select date") {
             Utils.showToastMessage(requireContext(), "Please fill in all fields")
@@ -336,7 +337,7 @@ class AddExpensesFragment : Fragment() {
             name = name,
             amount = amount,
             currency = currency,
-            description = "added description", // Replace with actual input
+            description = description,
             categoryId = categoryId,
             date = date,
             time = time,
