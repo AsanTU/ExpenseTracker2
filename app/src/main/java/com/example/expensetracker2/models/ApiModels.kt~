@@ -64,7 +64,7 @@ data class ExpenseUpdateRequest(
     val amount: Double,
     val currency: String,
     val description: String? = null,
-    @SerializedName("category_id") val categoryId: Int? = null,
+    val categoryId: Int? = null,
     val date: String,
     val time: String
 )

@@ -13,7 +13,6 @@ data class Expense(
     val currency: String,
     val description: String?,
     @SerializedName("category_id") val categoryId: Int?,
-    @SerializedName("category_name") val categoryName: String?,
     val date: String,
     val time: String
 ) : Serializable, Parcelable
